@@ -15,7 +15,7 @@ namespace Pokemanz.ConsoleApp
     {
         static Pokemon ChoosePokemon()
         {
-
+            IPokemonRepository repository = PokemonExcelRepository.Create();
             while (true)
             { 
                 Console.WriteLine("Choose a Pokemon\n\n");
@@ -26,16 +26,28 @@ namespace Pokemanz.ConsoleApp
                 Console.WriteLine();
                 Console.WriteLine();
 
-                Pokemon starter = PokemanzUtil.GetPokemonFromName(name);
-                if(starter == null)
+
+                switch (name)
                 {
-                    Console.WriteLine("\nInvaild input, please try again.\n");
-                    continue;
+                    case "b":
+                        name = "Bulbasuar";
+                        break;
+                    case "c":
+                        name = "Charmander";
+                        break;
+                    case "s":
+                        name = "squirtle";
+                        break;
+                    default:
+                        Console.WriteLine("\nInvaild input, please try again.\n");
+                        continue;
                 }
+
+                Pokemon starter = repository.GetPokemonByName(name);
 
                 Program.PrintStats(starter);
 
-                Console.WriteLine("\nDo you want to choose " + starter.name + "?\n'y' for yes, 'n' for no.");
+                Console.WriteLine("\nDo you want to choose " + starter.Name + "?\n'y' for yes, 'n' for no.");
                 string pokechoice = Console.ReadLine();
                 switch (pokechoice)
                 {
@@ -51,23 +63,23 @@ namespace Pokemanz.ConsoleApp
         static void Main(string[] args)
         {
             Pokemon starter = ChoosePokemon();
-            Console.WriteLine("Starter Pokemon: " + starter.name);
+            Console.WriteLine("Starter Pokemon: " + starter.Name);
             Console.ReadLine();
 
         }
 
         public static void PrintStats(Pokemon pokemon)
         {
-            Console.WriteLine("Name: " + pokemon.name);
-            Console.WriteLine("Type 1: " + pokemon.type1);
-            Console.WriteLine("Level: " + pokemon.level + "\n");
+            Console.WriteLine("Name: " + pokemon.Name);
+            Console.WriteLine("Type 1: " + pokemon.Type1);
+            Console.WriteLine("Level: " + pokemon.Level + "\n");
 
-            Console.WriteLine("Hp: " + pokemon.hp);
-            Console.WriteLine("Attack: " + pokemon.attack);
-            Console.WriteLine("Defense: " + pokemon.defense);
-            Console.WriteLine("Special Attack: " + pokemon.spAttack);
-            Console.WriteLine("Special Defense: " + pokemon.spDefense);
-            Console.WriteLine("Speed: " + pokemon.speed);
+            Console.WriteLine("Hp: " + pokemon.Hp);
+            Console.WriteLine("Attack: " + pokemon.Attack);
+            Console.WriteLine("Defense: " + pokemon.Defense);
+            Console.WriteLine("Special Attack: " + pokemon.SpAttack);
+            Console.WriteLine("Special Defense: " + pokemon.SpDefense);
+            Console.WriteLine("Speed: " + pokemon.Speed);
         }
     }
 }
