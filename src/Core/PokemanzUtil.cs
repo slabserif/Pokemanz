@@ -40,9 +40,9 @@ namespace Pokemanz.Core
 
 
         //TODO: write method to loop through each stat type and assign a new value
-        public int LevelUpBaseStat(int pokemon.basestat, int dv)
+        public static int LevelUpBaseStat(int pokemon.basestat, int dv)
         {
-            decimal newStat = ((((basestat + dv) * 2) + ((Math.Sqrt(Ev) / 4) * level) / 100) ;
+            decimal newStat = ((((basestat + dv) * 2) + ((Math.Sqrt(Ev) / 4) * level) / 100);
             if (pokemon.basestat == hp)
             {
                 newStat += level + 10;
@@ -54,6 +54,25 @@ namespace Pokemanz.Core
             newStat = Math.Floor(newStat);
             int levelUpBasestat = Decimal.ToInt32(newStat);
             return levelUpBasestat;
+        }
+
+
+        //TODO Calculate exp needed to gain next level (based on exp gain type for pokemon)
+        //Research derived from: http://bulbapedia.bulbagarden.net/wiki/Experience
+
+        public static int NextLevelExp(int pokemon.level, string pokemon.expType)
+        {
+            int lvlCubed = Math.Pow(pokemon.level, 3);
+            int nextExp = 0;
+            switch (pokemon.expType)
+            {
+                case "MedFast":
+                    nextExp = lvlCubed;
+                    return nextExp;
+                case "MedSlow":
+                    nextExp = ((6 / 5) * (lvlCubed)) - (15 * (pokemon.level * pokemon.level)) + (100 * pokemon.level)) -140;
+                    return nextExp;
+            }
         }
     }
 }
