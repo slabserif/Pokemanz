@@ -21,6 +21,7 @@ namespace Pokemanz.Core
         public int SpAttack { get; set; }
         public int SpDefense { get; set; }
         public int Speed { get; set; }
+        public int Ev { get; set; }
     }
 
     public class PokemonPropertyAttribute : Attribute
@@ -39,7 +40,8 @@ namespace Pokemanz.Core
         Fire,
         Flying,
         Electric,
-        Normal
+        Normal,
+        Poison
     }
     
 }
