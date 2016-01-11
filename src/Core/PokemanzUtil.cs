@@ -31,26 +31,29 @@ namespace Pokemanz.Core
 
         //Dv randomizer is used in generating the pokemon's initial stats, as well as making levelling up produce diverse stats between two of the same pokemon at the same level.
         //Dv reserach is derived from: http://bulbapedia.bulbagarden.net/wiki/Individual_values
-        /*static int DvRandomizer(int min, int max)
+        static int DvRandomizer(int min, int max)
         {
             Random random = new Random();
-            int dv = random.Next(0, 15);
+            int dv = random.Next(0, 16);
             return dv;
         }
 
-        public int CalcNewStat(int pokemon.basestat, int dv)
+
+        //TODO: write method to loop through each stat type and assign a new value
+        public int LevelUpBaseStat(int pokemon.basestat, int dv)
         {
-            decimal newStat = ((((basestat + dv) * 2) + ((Math.Sqrt(Ev) / 4) * level) / 100) + 5;
-            //TODO: round down decimal newHp, and convert to int
-            return int newStat;
+            decimal newStat = ((((basestat + dv) * 2) + ((Math.Sqrt(Ev) / 4) * level) / 100) ;
+            if (pokemon.basestat == hp)
+            {
+                newStat += level + 10;
+            }
+            else
+            {
+                newStat += 5;
+            }
+            newStat = Math.Floor(newStat);
+            int levelUpBasestat = Decimal.ToInt32(newStat);
+            return levelUpBasestat;
         }
-
-        public int CalcNewHp(int pokemon.hp, int dv)
-        {
-            decimal newHp = ((((basestat + dv) * 2) + ((Math.Sqrt(Ev) / 4) * level) / 100) + level + 10;
-            //TODO: round down decimal newHp, and convert to int
-            return int newHp;
-        }*/
-
     }
 }
