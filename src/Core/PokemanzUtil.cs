@@ -61,7 +61,7 @@ namespace Pokemanz.Core
             Random random = new Random();
             int dv = random.Next(0, 16);
             return dv;
-            decimal newStat = ((((basestat + dv) * 2) + ((Math.Sqrt(Ev) / 4) * level) / 100);
+            decimal newStat = Math.Floor(((basestat + dv) * 2) + ((Math.Sqrt(Ev) / 4) * level) / 100);
             if (pokemon.basestat == hp)
             {
                 newStat += level + 10;
@@ -70,7 +70,6 @@ namespace Pokemanz.Core
             {
                 newStat += 5;
             }
-            newStat = Math.Floor(newStat);
             int levelUpBasestat = Decimal.ToInt32(newStat);
             return levelUpBasestat;
         }
@@ -119,10 +118,26 @@ namespace Pokemanz.Core
             }
         }
 
-        //TODO When a pokemon is defeated, add its base stats as stat exp to the winning pokemon's corresponding stat.
-        public static PokemonDefeatStatExp(int enemyPokemon.statExp)
+        //TODO When a pokemon is defeated, add its base stats as stat exp to the winning pokemon's corresponding stat
+        //These values are used in the statcalc method but under the name EV
+
+        public static int PokemonDefeatStatExp(int enemyPokemon.baseStat)  //not the actual pokemon's stat, but the base stat for its species
         {
-            enemyPokemon.statExp += enemyPokemon.baseStat;//not the actual pokemon's stat, but the base stat for its species
+            decimal statIncrease = Math.Floor(Math.Sqrt(baseStat) / 4);
+            return statIncrease;
         }
+
+        public static int StoreStatIncrease(int statIncrease)
+        {
+            WinPokemon.statExpBeforeLevelUp += statIncrease;
+            return WinPokemon.statExpBeforeLevelUp;
+        }
+
+        // if leveled up, reset the ev counter for each stat
+        public static ResetStatExp()
+        {
+            WinPokemon.statExpBeforeLevelUp = 0;
+        }
+
     }
 }
