@@ -25,23 +25,42 @@ namespace Pokemanz.Core
         //If hits level 100, cannot level anymore (NOT MVP)
 
         //QUESTIONS:
-        //--BaseStats found online seem too high and lack clarity. Are these stats assuming the pokemon is at level 1, 0, 100, or what? 
         //--Is the stat calculation meant to add on to an existing stat, or replace it?
-        //--How do Exp points fit into this and what determines how much exp is needed per level?
 
-        //Dv randomizer is used in generating the pokemon's initial stats, as well as making levelling up produce diverse stats between two of the same pokemon at the same level.
+        //Dv randomizer is used in generating the pokemon's initial stats, as well as being used in the level up formula produce diverse stats between two of the same pokemon at the same level. Dv's do not change after a pokemon has been initialized.
         //Dv reserach is derived from: http://bulbapedia.bulbagarden.net/wiki/Individual_values
-        static int DvRandomizer(int min, int max)
+        static int DvRandomizer()
         {
             Random random = new Random();
             int dv = random.Next(0, 16);
             return dv;
         }
 
+        //Dv for hp is unique because it is calculated based on the results of the other stat dvs.
+        static int DvRandomizerHp()
+        {
+            int dvHp = 0;
+            If(IsOdd(dvAttack){
+                dvHp +=  8;
+            }
+            If(IsOdd(dvDefense){
+                dvHp += 4;
+            }
+            If(IsOdd(dvSpecial){
+                dvHp += 1;
+            }
+            If(IsOdd(dvSpeed){
+                dvHp += 2;
+            }
+            return dvHp;
+        }
 
         //TODO: write method to loop through each stat type and assign a new value
         public static int LevelUpBaseStat(int pokemon.basestat, int dv)
         {
+            Random random = new Random();
+            int dv = random.Next(0, 16);
+            return dv;
             decimal newStat = ((((basestat + dv) * 2) + ((Math.Sqrt(Ev) / 4) * level) / 100);
             if (pokemon.basestat == hp)
             {
@@ -63,16 +82,47 @@ namespace Pokemanz.Core
         public static int NextLevelExp(int pokemon.level, string pokemon.expType)
         {
             int lvlCubed = Math.Pow(pokemon.level, 3);
-            int nextExp = 0;
+            int expForLevelUp;
             switch (pokemon.expType)
             {
                 case "MedFast":
-                    nextExp = lvlCubed;
+                    expForLevelUp = lvlCubed;
                     return nextExp;
                 case "MedSlow":
-                    nextExp = ((6 / 5) * (lvlCubed)) - (15 * (pokemon.level * pokemon.level)) + (100 * pokemon.level)) -140;
-                    return nextExp;
+                    expForLevelUp = ((6 / 5) * (lvlCubed)) - (15 * (pokemon.level * pokemon.level)) + (100 * pokemon.level)) -140;
+                    return expForLevelUp;
             }
+        }
+
+        //TODO Battle win results.
+        //Add exp to pokemon who fought
+        //variable pokemon.expGiven is a column in the repository
+        //variable winPokemon is the pokemon you are using
+        //variable enemyPokemon is the pokemon you have defeated
+        //variable winPOkemon.nextExp is from NextLevelExp() and is the exp needed to level up
+        //variable winPokemon.currentExp
+        public static PokemonDefeatExpCalc(int enemyPokemon.expGiven)
+        {
+            if (winPokemon.expCount + enemyPokemon.expGiven >= winPokemon.expForLevelUp)
+            {
+                int extraExp = -1 * (winPokemon.expForLevelUp - (winPokemon.expCount + enemyPokemon.expGiven));
+                NextLevelExp(int winPokemon.level, string winPokemon.expType);
+                winPokemon.expCount = extraExp;
+                if (winPokemon.expCount >= winPokemon.expForLevelUp)
+                {
+                    //TODO repeat top if statement again
+                }
+            }
+            else
+            {
+                winPokemon.expCount += enemyPokemon.expGiven;
+            }
+        }
+
+        //TODO When a pokemon is defeated, add its base stats as stat exp to the winning pokemon's corresponding stat.
+        public static PokemonDefeatStatExp(int enemyPokemon.statExp)
+        {
+            enemyPokemon.statExp += enemyPokemon.baseStat;//not the actual pokemon's stat, but the base stat for its species
         }
     }
 }
