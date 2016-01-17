@@ -72,7 +72,7 @@ namespace Pokemanz.ConsoleApp
         {
             Console.WriteLine("Name: " + pokemon.Name);
             Console.WriteLine("Type 1: " + pokemon.Type1);
-            Console.WriteLine("Level: " + pokemon.Level + "\n");
+            Console.WriteLine("Level: " + pokemon.GetLevel() + "\n");
 
             Console.WriteLine("Hp: " + pokemon.Hp);
             Console.WriteLine("Attack: " + pokemon.Attack);

@@ -60,61 +60,6 @@ namespace Pokemanz.Core
             return value % 2 == 1;
         }
 
-            //TODO Calculate exp needed to gain next level (based on exp gain type for pokemon)
-        //Research derived from: http://bulbapedia.bulbagarden.net/wiki/Experience
-
-
-        //TODO Battle win results.
-        //Add exp to pokemon who fought
-        //variable pokemon.expGiven is a column in the repository
-        //variable winPokemon is the pokemon you are using
-        //variable enemyPokemon is the pokemon you have defeated
-        //variable winPOkemon.nextExp is from NextLevelExp() and is the exp needed to level up
-        //variable winPokemon.currentExp
-        public static void PokemonDefeatExpCalc(int expGiven)
-        {
-            if (winPokemon.expCount + enemyPokemon.expGiven >= winPokemon.expForLevelUp)
-            {
-                int extraExp = -1 * (winPokemon.expForLevelUp - (winPokemon.expCount + enemyPokemon.expGiven));
-                NextLevelExp(level, expType);
-                winPokemon.expCount = extraExp;
-                if (winPokemon.expCount >= winPokemon.expForLevelUp)
-                {
-                    //TODO repeat top if statement again
-                }
-            }
-            else
-            {
-                winPokemon.expCount += enemyPokemon.expGiven;
-            }
-         }
-
-        //TODO When a pokemon is defeated, add its base stats as stat exp to the winning pokemon's corresponding stat
-        //These values are used in the statcalc method but under the name EV
-
-        public static int PokemonDefeatStatExp(int baseStat)  //not the actual pokemon's stat, but the base stat for its species
-        {
-            decimal statIncrease = Math.Floor(Math.Sqrt(baseStat) / 4);
-            return statIncrease;
-        }
-
-        public static int StoreStatIncrease(int statIncrease)
-        {
-            WinPokemon.statExpBeforeLevelUp += statIncrease;
-            return WinPokemon.statExpBeforeLevelUp;
-        }
-
-        //if leveled up, reset the ev counter for each stat
-        public static void ResetStatExp()
-        {
-            WinPokemon.statExpBeforeLevelUp = 0;
-        }
-
-        public static int LevelUp(int level)
-        {
-            return pokemon.level++;
-        }
-
         //SpriteSheet Front
 
         public static int GetFrontSpriteRow(int id)

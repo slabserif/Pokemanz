@@ -8,20 +8,21 @@ namespace Pokemanz.Core
 {
     public class Pokemon
     {
-        public string Name { get; set; }
-        public int Id { get; set; }
+        public string Name { get; private set; }
+        public int Id { get; private set; }
         [PokemonProperty("Type 1")]
-        public PokemonType Type1 { get; set; }
+        public PokemonType Type1 { get; private set; }
         [PokemonProperty("Type 2")]
-        public PokemonType Type2 { get; set; }
-        public Stat Hp { get; set; }
-        public Stat Attack { get; set; }
-        public Stat Defense { get; set; }
-        public Stat SpAttack { get; set; }
-        public Stat SpDefense { get; set; }
-        public Stat Speed { get; set; }
-        public int Experience { get; set; }
-        public PokemonExpType ExpType { get; set; }
+        public PokemonType Type2 { get; private set; }
+        public Stat Hp { get; private set; }
+        public Stat Attack { get; private set; }
+        public Stat Defense { get; private set; }
+        public Stat SpAttack { get; private set; }
+        public Stat SpDefense { get; private set; }
+        public Stat Speed { get; private set; }
+        public int Experience { get; private set; }
+        public PokemonExpType ExpType { get; private set; }
+        public int BaseExpGiven { get; private set; }
 
         public bool AddExperience(int expEarned)
         {
@@ -62,21 +63,21 @@ namespace Pokemanz.Core
 
     public class Stat
     {
-        public int BaseValue { get; set; }
-        public int DeterminentValue { get; set; }
-        public int StatExpValue { get; set; }
+        public int BaseValue { get; private set; }
+        public int DeterminentValue { get; private set; }
+        public int StatExpValue { get; private set; }
 
         protected int CalcStat(int level)
         {
             double newStat = Math.Floor(((this.BaseValue + this.DeterminentValue) * 2) + ((Math.Sqrt(this.StatExpValue) / 4) * level) / 100);
-            return (int) newStat;
+            return (int)newStat;
         }
 
         public virtual int GetValue(int level)
         {
-           int statValue =  CalcStat(level);
+            int statValue = CalcStat(level);
             statValue += 5;
-            return statValue;         
+            return statValue;
         }
     }
 
@@ -117,5 +118,5 @@ namespace Pokemanz.Core
         MedSlow,
         MedFast
     }
-    
+
 }
