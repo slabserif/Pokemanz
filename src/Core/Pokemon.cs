@@ -14,7 +14,7 @@ namespace Pokemanz.Core
 		public PokemonType Type1 { get; private set; }
 		[PokemonProperty("Type 2")]
 		public PokemonType Type2 { get; private set; }
-		public Stat Hp { get; private set; }
+		public HealthStat Hp { get; private set; }
 		public Stat Attack { get; private set; }
 		public Stat Defense { get; private set; }
 		public Stat SpAttack { get; private set; }
@@ -65,7 +65,7 @@ namespace Pokemanz.Core
 	{
 		public int BaseValue { get; }
 		public int DeterminentValue { get; }
-		public int StatExpValue { get; private set; }
+		public int EffortValue { get; private set; }
 
 		public Stat(int baseValue)
 		{
@@ -79,10 +79,14 @@ namespace Pokemanz.Core
 			this.DeterminentValue = determinantValue;
 		}
 
+		public override string ToString()
+		{
+			return $"Base Value: {this.BaseValue}, Determinent Value: {this.DeterminentValue}, Effort Value: {this.EffortValue}";
+		}
 
 		protected int CalcStat(int level)
 		{
-			double newStat = Math.Floor(((this.BaseValue + this.DeterminentValue) * 2) + ((Math.Sqrt(this.StatExpValue) / 4) * level) / 100);
+			double newStat = Math.Floor(((this.BaseValue + this.DeterminentValue) * 2) + ((Math.Sqrt(this.EffortValue) / 4) * level) / 100);
 			return (int)newStat;
 		}
 
@@ -110,7 +114,7 @@ namespace Pokemanz.Core
 		}
 
 		//Determinant Value for hp is unique because it is calculated based on the results of the other stat dvs.
-		private static int GetHpDeterminent(int dvAttack, int dvDefense, int dvSpecial, int dvSpeed)
+		private static int GetHpDeterminent(int dvAttack, int dvDefense, int dvSpecialAttack, int dvSpeed)
 		{
 			int dvHp = 0;
 			if (PokemanzUtil.IsOdd(dvAttack))
@@ -121,7 +125,7 @@ namespace Pokemanz.Core
 			{
 				dvHp += 4;
 			}
-			if (PokemanzUtil.IsOdd(dvSpecial))
+			if (PokemanzUtil.IsOdd(dvSpecialAttack))
 			{
 				dvHp += 1;
 			}

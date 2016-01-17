@@ -77,19 +77,22 @@ namespace Pokemanz.Core
 								{
 									propertyInfo.SetValue(pokemon, Enum.Parse(typeof(PokemonType), cell));
 								}
+								else if (propertyInfo.PropertyType == typeof(PokemonExpType))
+								{
+									propertyInfo.SetValue(pokemon, Enum.Parse(typeof(PokemonExpType), cell));
+								}
 								else if (propertyInfo.PropertyType == typeof(Stat))
 								{
 									int baseValue = int.Parse(cell);
-									if (string.Equals(propertyInfo.Name, "Hp"))
-									{
-										healthStatPropertyInfo = propertyInfo;
-									}
-									else
-									{
 										Stat stat;
 										stat = new Stat(baseValue);
 										propertyInfo.SetValue(pokemon, stat);
-									}
+
+								}
+								else if (propertyInfo.PropertyType == typeof(HealthStat))
+								{
+									healthStatPropertyInfo = propertyInfo;
+									healthStatValue = int.Parse(cell);
 								}
 								else
 								{

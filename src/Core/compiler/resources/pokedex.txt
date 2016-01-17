@@ -1,26 +1,8 @@
 Id	Name	Type 1	Type 2	Hp	Attack	Defense	SpAttack	SpDefense	Speed	BaseExpGiven	ExpType
 1	Bulbasuar	Grass		45	49	49	65	65	45	64	MedSlow
-2											
-3											
 4	Charmander	Fire		20	12	10	10	11	13	65	MedSlow
-5											
-6											
 7	Squirtle	Water		20	12	13	9	12	10	66	MedSlow
-8											
-9											
-10											
-11											
-12											
-13											
-14											
-15											
 16	Pidgey	Flying		20	12	10	9	10	12	55	MedSlow
-17											
-18											
 19	Rattata	Normal		19	13	10	8	10	13	57	MedFast
-20											
-21											
-22											
 23	Ekans	Poison		20	13	10	9	11	12	62	MedFast
-24											
 25	Pikachu	Electric		20	13	10	9	11	15	82	MedFast
