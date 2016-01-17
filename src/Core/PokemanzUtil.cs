@@ -29,7 +29,7 @@ namespace Pokemanz.Core
 
         //Dv randomizer is used in generating the pokemon's initial stats, as well as being used in the level up formula produce diverse stats between two of the same pokemon at the same level. Dv's do not change after a pokemon has been initialized.
         //Dv reserach is derived from: http://bulbapedia.bulbagarden.net/wiki/Individual_values
-        static int DvRandomizer()
+        static int GetDeterminentValue()
         {
             Random random = new Random();
             int dv = random.Next(0, 16);
@@ -37,61 +37,32 @@ namespace Pokemanz.Core
         }
 
         //Dv for hp is unique because it is calculated based on the results of the other stat dvs.
-        static int DvRandomizerHp()
+        static int DeterminentRandomizerHp(int dvAttack, int dvDefense, int dvSpecial, int dvSpeed)
         {
             int dvHp = 0;
-            If(IsOdd(dvAttack){
-                dvHp +=  8;
+            if(IsOdd(dvAttack)){
+                dvHp += 8;
             }
-            If(IsOdd(dvDefense){
+            if(IsOdd(dvDefense)){
                 dvHp += 4;
             }
-            If(IsOdd(dvSpecial){
+            if(IsOdd(dvSpecial)){
                 dvHp += 1;
             }
-            If(IsOdd(dvSpeed){
+            if(IsOdd(dvSpeed)){
                 dvHp += 2;
             }
             return dvHp;
         }
 
-        //TODO: write method to loop through each stat type and assign a new value
-        public static int LevelUpBaseStat(int pokemon.basestat, int dv)
+        private static bool IsOdd(int value)
         {
-            Random random = new Random();
-            int dv = random.Next(0, 16);
-            return dv;
-            decimal newStat = Math.Floor(((basestat + dv) * 2) + ((Math.Sqrt(Ev) / 4) * level) / 100);
-            if (pokemon.basestat == hp)
-            {
-                newStat += level + 10;
-            }
-            else
-            {
-                newStat += 5;
-            }
-            int levelUpBasestat = Decimal.ToInt32(newStat);
-            return levelUpBasestat;
+            return value % 2 == 1;
         }
 
-
-        //TODO Calculate exp needed to gain next level (based on exp gain type for pokemon)
+            //TODO Calculate exp needed to gain next level (based on exp gain type for pokemon)
         //Research derived from: http://bulbapedia.bulbagarden.net/wiki/Experience
 
-        public static int NextLevelExp(int pokemon.level, string pokemon.expType)
-        {
-            int lvlCubed = Math.Pow(pokemon.level, 3);
-            int expForLevelUp;
-            switch (pokemon.expType)
-            {
-                case "MedFast":
-                    expForLevelUp = lvlCubed;
-                    return nextExp;
-                case "MedSlow":
-                    expForLevelUp = ((6 / 5) * (lvlCubed)) - (15 * (pokemon.level * pokemon.level)) + (100 * pokemon.level)) -140;
-                    return expForLevelUp;
-            }
-        }
 
         //TODO Battle win results.
         //Add exp to pokemon who fought
@@ -100,12 +71,12 @@ namespace Pokemanz.Core
         //variable enemyPokemon is the pokemon you have defeated
         //variable winPOkemon.nextExp is from NextLevelExp() and is the exp needed to level up
         //variable winPokemon.currentExp
-        public static PokemonDefeatExpCalc(int enemyPokemon.expGiven)
+        public static void PokemonDefeatExpCalc(int expGiven)
         {
             if (winPokemon.expCount + enemyPokemon.expGiven >= winPokemon.expForLevelUp)
             {
                 int extraExp = -1 * (winPokemon.expForLevelUp - (winPokemon.expCount + enemyPokemon.expGiven));
-                NextLevelExp(int winPokemon.level, string winPokemon.expType);
+                NextLevelExp(level, expType);
                 winPokemon.expCount = extraExp;
                 if (winPokemon.expCount >= winPokemon.expForLevelUp)
                 {
@@ -116,12 +87,12 @@ namespace Pokemanz.Core
             {
                 winPokemon.expCount += enemyPokemon.expGiven;
             }
-        }
+         }
 
         //TODO When a pokemon is defeated, add its base stats as stat exp to the winning pokemon's corresponding stat
         //These values are used in the statcalc method but under the name EV
 
-        public static int PokemonDefeatStatExp(int enemyPokemon.baseStat)  //not the actual pokemon's stat, but the base stat for its species
+        public static int PokemonDefeatStatExp(int baseStat)  //not the actual pokemon's stat, but the base stat for its species
         {
             decimal statIncrease = Math.Floor(Math.Sqrt(baseStat) / 4);
             return statIncrease;
@@ -133,10 +104,27 @@ namespace Pokemanz.Core
             return WinPokemon.statExpBeforeLevelUp;
         }
 
-        // if leveled up, reset the ev counter for each stat
-        public static ResetStatExp()
+        //if leveled up, reset the ev counter for each stat
+        public static void ResetStatExp()
         {
             WinPokemon.statExpBeforeLevelUp = 0;
+        }
+
+        public static int LevelUp(int level)
+        {
+            return pokemon.level++;
+        }
+
+        //SpriteSheet Front
+
+        public static int GetFrontSpriteRow(int id)
+        {
+            return id / 16;
+        }
+
+        public static int GetFrontSpriteCol(int id)
+        {
+            return id % 16;
         }
 
     }

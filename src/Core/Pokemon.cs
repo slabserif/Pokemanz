@@ -14,14 +14,83 @@ namespace Pokemanz.Core
         public PokemonType Type1 { get; set; }
         [PokemonProperty("Type 2")]
         public PokemonType Type2 { get; set; }
-        public int Level { get; set; }
-        public int Hp { get; set; }
-        public int Attack { get; set; }
-        public int Defense { get; set; }
-        public int SpAttack { get; set; }
-        public int SpDefense { get; set; }
-        public int Speed { get; set; }
+        public Stat Hp { get; set; }
+        public Stat Attack { get; set; }
+        public Stat Defense { get; set; }
+        public Stat SpAttack { get; set; }
+        public Stat SpDefense { get; set; }
+        public Stat Speed { get; set; }
+        public int Experience { get; set; }
+        public PokemonExpType ExpType { get; set; }
+
+        public bool AddExperience(int expEarned)
+        {
+            int levelBefore = GetLevel();
+            this.Experience += expEarned;
+            int levelAfter = GetLevel();
+            return levelAfter > levelBefore;
+        }
+
+        public int GetLevel()
+        {
+            switch (this.ExpType)
+            {
+                case PokemonExpType.MedFast:
+                    const double oneThird = 1.0 / 3.0;
+                    return (int)Math.Pow(this.Experience, oneThird);
+                case PokemonExpType.MedSlow:
+                    int level = 2;
+                    while (true)
+                    {
+                        int lvlCubed = (int)Math.Pow(level, 3);
+                        int expForLevelUp = (((6 / 5) * (lvlCubed)) - (15 * (level * level)) + (100 * level)) - 140;
+                        if (expForLevelUp > this.Experience)
+                        {
+                            return level - 1;
+                        }
+                        if (expForLevelUp == this.Experience)
+                        {
+                            return level;
+                        }
+                        level++;
+                    }
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(this.ExpType));
+            }
+        }
     }
+
+    public class Stat
+    {
+        public int BaseValue { get; set; }
+        public int DeterminentValue { get; set; }
+        public int StatExpValue { get; set; }
+
+        protected int CalcStat(int level)
+        {
+            double newStat = Math.Floor(((this.BaseValue + this.DeterminentValue) * 2) + ((Math.Sqrt(this.StatExpValue) / 4) * level) / 100);
+            return (int) newStat;
+        }
+
+        public virtual int GetValue(int level)
+        {
+           int statValue =  CalcStat(level);
+            statValue += 5;
+            return statValue;         
+        }
+    }
+
+    public class HealthStat : Stat
+    {
+        public override int GetValue(int level)
+        {
+
+            int statValue = CalcStat(level);
+            statValue += level + 10;
+            return statValue;
+        }
+    }
+
 
     public class PokemonPropertyAttribute : Attribute
     {
@@ -41,6 +110,12 @@ namespace Pokemanz.Core
         Electric,
         Normal,
         Poison
+    }
+
+    public enum PokemonExpType
+    {
+        MedSlow,
+        MedFast
     }
     
 }
