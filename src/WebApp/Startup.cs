@@ -24,6 +24,7 @@ namespace WebApp
 			app.UseIISPlatformHandler();
 
 			app.UseMvc();
+			app.UseStaticFiles();
 		}
 
 		// Entry point for the application.
