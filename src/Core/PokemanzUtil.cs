@@ -8,6 +8,7 @@ namespace Pokemanz.Core
 {
 	public static class PokemanzUtil
 	{
+		private static Random random { get; } = new Random();
 		//TODO: Pokemon stat calculator
 		//Stat Research is derived from: http://bulbapedia.bulbagarden.net/wiki/Statistic
 
@@ -26,40 +27,9 @@ namespace Pokemanz.Core
 
 		//QUESTIONS:
 		//--Is the stat calculation meant to add on to an existing stat, or replace it?
+		
 
-		//Dv randomizer is used in generating the pokemon's initial stats, as well as being used in the level up formula produce diverse stats between two of the same pokemon at the same level. Dv's do not change after a pokemon has been initialized.
-		//Dv reserach is derived from: http://bulbapedia.bulbagarden.net/wiki/Individual_values
-		static int GetDeterminentValue()
-		{
-			Random random = new Random();
-			int dv = random.Next(0, 16);
-			return dv;
-		}
-
-		//Dv for hp is unique because it is calculated based on the results of the other stat dvs.
-		static int DeterminentRandomizerHp(int dvAttack, int dvDefense, int dvSpecial, int dvSpeed)
-		{
-			int dvHp = 0;
-			if (IsOdd(dvAttack))
-			{
-				dvHp += 8;
-			}
-			if (IsOdd(dvDefense))
-			{
-				dvHp += 4;
-			}
-			if (IsOdd(dvSpecial))
-			{
-				dvHp += 1;
-			}
-			if (IsOdd(dvSpeed))
-			{
-				dvHp += 2;
-			}
-			return dvHp;
-		}
-
-		private static bool IsOdd(int value)
+		internal static bool IsOdd(int value)
 		{
 			return value % 2 == 1;
 		}
@@ -76,5 +46,9 @@ namespace Pokemanz.Core
 			return id % 16;
 		}
 
+		internal static int GetRandomNumber(int minValue, int maxValue)
+		{
+			return PokemanzUtil.random.Next(minValue, maxValue);
+		}
 	}
 }

@@ -63,9 +63,22 @@ namespace Pokemanz.Core
 
 	public class Stat
 	{
-		public int BaseValue { get; private set; }
-		public int DeterminentValue { get; private set; }
+		public int BaseValue { get; }
+		public int DeterminentValue { get; }
 		public int StatExpValue { get; private set; }
+
+		public Stat(int baseValue)
+		{
+			this.BaseValue = baseValue;
+			this.DeterminentValue = PokemanzUtil.GetRandomNumber(0, 16);
+		}
+
+		public Stat(int baseValue, int determinantValue)
+		{
+			this.BaseValue = baseValue;
+			this.DeterminentValue = determinantValue;
+		}
+
 
 		protected int CalcStat(int level)
 		{
@@ -81,15 +94,44 @@ namespace Pokemanz.Core
 		}
 	}
 
-	public class HealthStat : Stat
+	public sealed class HealthStat : Stat
 	{
+		public HealthStat(int baseValue, int dvAttack, int dvDefense, int dvSpecial, int dvSpeed) 
+			: base(baseValue, HealthStat.GetHpDeterminent(dvAttack, dvDefense, dvSpecial, dvSpeed))
+		{
+		}
+		
+
 		public override int GetValue(int level)
 		{
-
 			int statValue = CalcStat(level);
 			statValue += level + 10;
 			return statValue;
 		}
+
+		//Determinant Value for hp is unique because it is calculated based on the results of the other stat dvs.
+		private static int GetHpDeterminent(int dvAttack, int dvDefense, int dvSpecial, int dvSpeed)
+		{
+			int dvHp = 0;
+			if (PokemanzUtil.IsOdd(dvAttack))
+			{
+				dvHp += 8;
+			}
+			if (PokemanzUtil.IsOdd(dvDefense))
+			{
+				dvHp += 4;
+			}
+			if (PokemanzUtil.IsOdd(dvSpecial))
+			{
+				dvHp += 1;
+			}
+			if (PokemanzUtil.IsOdd(dvSpeed))
+			{
+				dvHp += 2;
+			}
+			return dvHp;
+		}
+
 	}
 
 
