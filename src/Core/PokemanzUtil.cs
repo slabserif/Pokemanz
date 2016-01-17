@@ -6,56 +6,34 @@ using System.Threading.Tasks;
 
 namespace Pokemanz.Core
 {
-    public static class PokemanzUtil
-    {
-        //TODO: Pokemon stat calculator
-        //Stat Research is derived from: http://bulbapedia.bulbagarden.net/wiki/Statistic
+	public static class PokemanzUtil
+	{
+		private static Random random { get; } = new Random();
+		//TODO: Pokemon stat calculator
+		//Stat Research is derived from: http://bulbapedia.bulbagarden.net/wiki/Statistic
+		
 
-        //Determinent Values: http://bulbapedia.bulbagarden.net/wiki/Individual_values
-        static int GetDeterminentValue()
-        {
-            Random random = new Random();
-            int dv = random.Next(-1, 16);
-            return dv;
-        }
+		internal static bool IsOdd(int value)
+		{
+			return value % 2 == 1;
+		}
 
-        //Dv for hp is unique because it is calculated based on the results of the other stat dvs.
-        static int DeterminentRandomizerHp(int dvAttack, int dvDefense, int dvSpecial, int dvSpeed)
-        {
-            int dvHp = 0;
-            if(IsOdd(dvAttack)){
-                dvHp += 8;
-            }
-            if(IsOdd(dvDefense)){
-                dvHp += 4;
-            }
-            if(IsOdd(dvSpecial)){
-                dvHp += 1;
-            }
-            if(IsOdd(dvSpeed)){
-                dvHp += 2;
-            }
-            return dvHp;
-        }
+		//SpriteSheet Front
 
-        private static bool IsOdd(int value)
-        {
-            return value % 2 == 1;
-        }
+		public static int GetFrontSpriteRow(int id)
+		{
+			return id / 16;
+		}
 
-        //SpriteSheet Front
+		public static int GetFrontSpriteCol(int id)
+		{
+			return id % 16;
+		}
 
-        public static int GetFrontSpriteRow(int id)
-        {
-            return id / 16;
-        }
-
-        public static int GetFrontSpriteCol(int id)
-        {
-            return id % 16;
-        }
-
-		//Experience gain formula:http://bulbapedia.bulbagarden.net/wiki/Experience
+		internal static int GetRandomNumber(int minValue, int maxValue)
+		{
+			return PokemanzUtil.random.Next(minValue, maxValue);
+		}
 
 		public static int ExpGain(int baseExpGiven, bool isWild, int enemyLevel, int pokemonUsed)
 		{
@@ -72,10 +50,9 @@ namespace Pokemanz.Core
 			{
 				trainerBonus = 1.5f;
 			}
-			
+
 			int expGain = (int)(trainerBonus * baseExpGiven * enemyLevel) / (7 * pokemonUsed);
 			return expGain;
 		}
-
 	}
 }

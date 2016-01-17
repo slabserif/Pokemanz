@@ -5,15 +5,15 @@ using System.Threading.Tasks;
 
 namespace Pokemanz.Core
 {
-    public interface IPokemonRepository
-    {
-        Pokemon GetPokemonByName(string name);
+	public interface IPokemonRepository
+	{
+		Pokemon GetPokemonByName(string name);
 
-        Pokemon GetPokemonById(int id);
+		Pokemon GetPokemonById(int id);
 
-        Pokemon GetRandomPokemon();
+		Pokemon GetRandomPokemon();
 
-        List<Pokemon> GetAllPokemon();
-               
-    }
+		List<Pokemon> GetAllPokemon();
+
+	}
 }
