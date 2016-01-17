@@ -102,7 +102,7 @@ namespace Pokemanz.Core
         }
     }
 
-    public enum PokemonType
+	public enum PokemonType
     {
         Grass,
         Water,

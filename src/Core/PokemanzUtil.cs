@@ -11,28 +11,11 @@ namespace Pokemanz.Core
         //TODO: Pokemon stat calculator
         //Stat Research is derived from: http://bulbapedia.bulbagarden.net/wiki/Statistic
 
-        //METHOD: PokemonStatCalc();
-        //Runs a stat calculation 5 times, once for each stat (attack, defence, spattack, spdefense, speed)
-        //Runs an Hp calculation 
-
-        //Needs to receive 
-        //--int dv from DvRandomizer()
-        //--Level of current pokemon
-        //--Base Stats from tab delimited for pokemon
-        //--Count of total Evs earned between last level up and new level up
-        //--New moves if any (NOT MVP)
-        //--Evolution (NOT MVP)
-        //If hits level 100, cannot level anymore (NOT MVP)
-
-        //QUESTIONS:
-        //--Is the stat calculation meant to add on to an existing stat, or replace it?
-
-        //Dv randomizer is used in generating the pokemon's initial stats, as well as being used in the level up formula produce diverse stats between two of the same pokemon at the same level. Dv's do not change after a pokemon has been initialized.
-        //Dv reserach is derived from: http://bulbapedia.bulbagarden.net/wiki/Individual_values
+        //Determinent Values: http://bulbapedia.bulbagarden.net/wiki/Individual_values
         static int GetDeterminentValue()
         {
             Random random = new Random();
-            int dv = random.Next(0, 16);
+            int dv = random.Next(-1, 16);
             return dv;
         }
 
@@ -72,5 +55,27 @@ namespace Pokemanz.Core
             return id % 16;
         }
 
-    }
+		//Experience gain formula:http://bulbapedia.bulbagarden.net/wiki/Experience
+
+		public static int ExpGain(int baseExpGiven, bool isWild, int enemyLevel, int pokemonUsed)
+		{
+			/*int t = 1; //TODO: placeholder for pokemon is original owner vs received in a trade
+			int e = 1; //TODO: placeholder for LuckyEgg
+			int p = 1; //TODO: placeholder for O-power
+			int f = 1; //TODO: placeholder for affection hearts
+			int v = 1; //TODO placeholder for exp gain if pokemon is past level where it should have evolved but did not 
+			int expGain = (a * t * BaseExpGiven * e * enemyLevel * p * f * v) / (7 * s);*/
+
+			float trainerBonus = 1;
+
+			if (!isWild)
+			{
+				trainerBonus = 1.5f;
+			}
+			
+			int expGain = (int)(trainerBonus * baseExpGiven * enemyLevel) / (7 * pokemonUsed);
+			return expGain;
+		}
+
+	}
 }
