@@ -24,6 +24,11 @@ namespace Pokemanz.Core
 		public PokemonExpType ExpType { get; private set; }
 		public int BaseExpGiven { get; private set; }
 
+		public int MoveSlot1 { get; private set; }
+		public int MoveSlot2 { get; private set; }
+		public int MoveSlot3 { get; private set; }
+		public int MoveSlot4 { get; private set; }
+
 		public bool AddExperience(int expEarned)
 		{
 			int levelBefore = GetLevel();
@@ -189,6 +194,9 @@ namespace Pokemanz.Core
 	public enum MoveCategory
 	{
 		Physical,
-		Special
+		Special,
+		Status
 	}
+
+	//TODO: inherited enum class for types of Status conditions?
 }

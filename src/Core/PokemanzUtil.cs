@@ -56,7 +56,7 @@ namespace Pokemanz.Core
 		}
 
 		//TODO: add rest of types
-		public static int DamageEffectiveness(PokemonType, AttackType)
+		public static int DamageEffectiveness(PokemonType, Moves PokemonType)
 		{
 			int normalAttack = 0;
 			int fightingAttack = 1;
@@ -72,9 +72,137 @@ namespace Pokemanz.Core
 			{1, 2, 1}   /*  Flying */
 			};
 
-			int attackModifier = typeChart[PokemonType, AttackType];
+			int attackModifier = typeChart[PokemonType, Moves PokemonType];
 
 			return attackModifier;
 		}
+
+		//Catchrate formula
+
+		public static int CatchRate(int hpMax, int hpCurrent, int ballCatchRateModifer, int statusConditionModifier)
+		{
+			int catchRate = max(((3 * hpMax) - (2 * hpCurrent)) * ( ballCatchRateModifer / (3 * hpMax), 1)) + statusConditionModifier;
+			return catchRate;
+		}
+
+		public static int ShakeProbability(int catchRate)
+		{
+			int shakeProbability;
+		if (catchRate = Enumerable.Range(0, 1)){
+				return shakeProbability = 63;
+			}
+		else if (catchRate == 2)
+			{
+				return shakeProbability = 75;
+			}
+			else if (catchRate == 3)
+			{
+				return shakeProbability = 84;
+			}
+			else if (catchRate == 4)
+			{
+				return shakeProbability = 90;
+			}
+			else if (catchRate == 5)
+			{
+				return shakeProbability = 95;
+			}
+			else if (catchRate = Enumerable.Range(6, 7))
+			{
+				return shakeProbability = 103;
+			}
+			else if (catchRate = Enumerable.Range(8, 10))
+			{
+				return shakeProbability = 113;
+			}
+			else if (catchRate = Enumerable.Range(11, 15))
+			{
+				return shakeProbability = 126;
+			}
+			else if (catchRate = Enumerable.Range(16, 20))
+			{
+				return shakeProbability = 134;
+			}
+			else if (catchRate = Enumerable.Range(21, 30))
+			{
+				return shakeProbability = 149;
+			}
+			else if (catchRate = Enumerable.Range(31, 40))
+			{
+				return shakeProbability = 160;
+			}
+			else if (catchRate = Enumerable.Range(41, 50))
+			{
+				return shakeProbability = 169;
+			}
+			else if (catchRate = Enumerable.Range(51, 60))
+			{
+				return shakeProbability = 177;
+			}
+			else if (catchRate = Enumerable.Range(61, 80))
+			{
+				return shakeProbability = 191;
+			}
+			else if (catchRate = Enumerable.Range(81, 100))
+			{
+				return shakeProbability = 201;
+			}
+			else if (catchRate = Enumerable.Range(101, 120))
+			{
+				return shakeProbability = 211;
+			}
+			else if (catchRate = Enumerable.Range(121, 140))
+			{
+				return shakeProbability = 220;
+			}
+			else if (catchRate = Enumerable.Range(141, 160))
+			{
+				return shakeProbability = 227;
+			}
+			else if (catchRate = Enumerable.Range(161, 180))
+			{
+				return shakeProbability = 234;
+			}
+			else if (catchRate = Enumerable.Range(181, 200))
+			{
+				return shakeProbability = 240;
+			}
+			else if (catchRate = Enumerable.Range(201, 220))
+			{
+				return shakeProbability = 246;
+			}
+			else if (catchRate = Enumerable.Range(221, 240))
+			{
+				return shakeProbability = 251;
+			}
+			else if (catchRate = Enumerable.Range(241, 254))
+			{
+				return shakeProbability = 253;
+			}
+			else if (catchRate == 255)
+			{
+				return shakeProbability = 255;
+			}
+			else
+			{
+				throw new ArgumentOutOfRangeException(nameof(shakeProbability));
+			}
+		}
+
+		//If return true, pokemon is caught, if return false, pokemon is not caught
+		public static bool ShakeCheck(int shakeProbability)
+		{
+			for (int numberOfTries = 0; numberOfTries < 4; numberOfTries++)
+			{
+				int shakeCheck = GetRandomNumber(0, 255);
+
+				if (shakeProbability >= shakeCheck)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
 	}
 }
+
