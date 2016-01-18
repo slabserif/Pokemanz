@@ -174,4 +174,21 @@ namespace Pokemanz.Core
 		MedFast
 	}
 
+	public class Moves
+	{
+		public string Name { get; private set; }
+		public int Id { get; private set; }
+		public PokemonType Type { get; private set; }
+		public MoveCategory Category { get; private set; }
+		public int PP { get; private set; }
+		public int BasePower { get; private set; }
+		public int Accuracy { get; private set; }
+
+	}
+
+	public enum MoveCategory
+	{
+		Physical,
+		Special
+	}
 }

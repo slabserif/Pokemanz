@@ -72,15 +72,9 @@ namespace Pokemanz.Core
 			{1, 2, 1}   /*  Flying */
 			};
 
-			int attackModifier = typeChart[PokemonType, AttackType] 
+			int attackModifier = typeChart[PokemonType, AttackType];
 
 			return attackModifier;
 		}
-
-		//TODO: Battle setup
-		public void newWildBattle()
-		{
-			int wildPokemonId = PokemonExcelRepository.GetRandomPokemon();
-		} 
 	}
 }
