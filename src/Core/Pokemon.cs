@@ -138,7 +138,6 @@ namespace Pokemanz.Core
 
 	}
 
-
 	public class PokemonPropertyAttribute : Attribute
 	{
 		public string Name { get; set; }
@@ -156,7 +155,17 @@ namespace Pokemanz.Core
 		Flying,
 		Electric,
 		Normal,
-		Poison
+		Poison,
+		Ground,
+		Rock,
+		Ghost,
+		Steel,
+		Dark,
+		Bug,
+		Ice,
+		Dragon,
+		Fighting,
+		Psychic
 	}
 
 	public enum PokemonExpType

@@ -54,5 +54,33 @@ namespace Pokemanz.Core
 			int expGain = (int)(trainerBonus * baseExpGiven * enemyLevel) / (7 * pokemonUsed);
 			return expGain;
 		}
+
+		//TODO: add rest of types
+		public static int DamageEffectiveness(PokemonType, AttackType)
+		{
+			int normalAttack = 0;
+			int fightingAttack = 1;
+			int flyingAttack = 2;
+
+			PokemonType Normal = 0;
+			PokemonType Fight = 1;
+			PokemonType Flying = 2;
+
+			float[,] typeChart = new float[3, 3] {
+			{1, 1, 1,} ,   /*  Normal */
+			{2, 1, 0.5f} ,   /*  Fight */
+			{1, 2, 1}   /*  Flying */
+			};
+
+			int attackModifier = typeChart[PokemonType, AttackType] 
+
+			return attackModifier;
+		}
+
+		//TODO: Battle setup
+		public void newWildBattle()
+		{
+			int wildPokemonId = PokemonExcelRepository.GetRandomPokemon();
+		} 
 	}
 }
