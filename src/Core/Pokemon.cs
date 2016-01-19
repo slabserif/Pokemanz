@@ -155,23 +155,23 @@ namespace Pokemanz.Core
 
 	public enum PokemonType
 	{
-		Grass,
-		Water,
-		Fire,
-		Flying,
-		Electric,
 		Normal,
+		Fighting,
+		Flying,
 		Poison,
 		Ground,
 		Rock,
+		Bug,
 		Ghost,
 		Steel,
-		Dark,
-		Bug,
+		Fire,
+		Water,
+		Grass,
+		Electric,
+		Psychic,
 		Ice,
 		Dragon,
-		Fighting,
-		Psychic
+		Dark
 	}
 
 	public enum PokemonExpType
@@ -228,5 +228,38 @@ namespace Pokemanz.Core
 		UltraBall
 	}
 
-	//TODO: inherited enum class for types of Status conditions?
+	public class StatusConditions
+	{
+		public float StatusConditionModifier
+		{
+			get
+			{
+				switch (this.Type)
+				{
+					case StatusType.Paralyze:
+						return 5;
+					case StatusType.Sleep:
+						return 10;
+					case StatusType.Burn:
+						return 5;
+					case StatusType.Freeze:
+						return 10;
+					case StatusType.Poison:
+						return 5;
+					default:
+						throw new ArgumentOutOfRangeException(nameof(this.Type));
+				}
+			}
+		}
+		public StatusType Type { get; set; }
+	}
+
+	public enum StatusType
+	{
+		Paralyze,
+		Sleep,
+		Burn,
+		Freeze,
+		Poison
+	}
 }
