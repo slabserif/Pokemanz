@@ -23,6 +23,7 @@ namespace Pokemanz.Core
 		public int Experience { get; private set; }
 		public PokemonExpType ExpType { get; private set; }
 		public int BaseExpGiven { get; private set; }
+		public int BaseCatchRate { get; private set; }
 
 		public int MoveSlot1 { get; private set; }
 		public int MoveSlot2 { get; private set; }
@@ -196,6 +197,35 @@ namespace Pokemanz.Core
 		Physical,
 		Special,
 		Status
+	}
+
+	public class PokeBall
+	{
+		public float BallCatchRateModifer
+		{
+			get
+			{
+				switch (this.Type)
+				{
+					case PokeballType.PokeBall:
+						return 1;
+					case PokeballType.GreatBall:
+						return 1.5f;
+					case PokeballType.UltraBall:
+						return 2;
+					default:
+						throw new ArgumentOutOfRangeException(nameof(this.Type));
+				}
+			}
+		}
+		public PokeballType Type { get; set; }
+	}
+
+	public enum PokeballType
+	{
+		PokeBall,
+		GreatBall,
+		UltraBall
 	}
 
 	//TODO: inherited enum class for types of Status conditions?

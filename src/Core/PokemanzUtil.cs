@@ -56,23 +56,16 @@ namespace Pokemanz.Core
 		}
 
 		//TODO: add rest of types
-		public static int DamageEffectiveness(PokemonType, Moves PokemonType)
+		public static float DamageEffectiveness(PokemonType attackType, PokemonType defenseType)
 		{
-			int normalAttack = 0;
-			int fightingAttack = 1;
-			int flyingAttack = 2;
-
-			PokemonType Normal = 0;
-			PokemonType Fight = 1;
-			PokemonType Flying = 2;
-
+			
 			float[,] typeChart = new float[3, 3] {
-			{1, 1, 1,} ,   /*  Normal */
-			{2, 1, 0.5f} ,   /*  Fight */
-			{1, 2, 1}   /*  Flying */
+			{1, 1, 1,} ,   
+			{2, 1, 0.5f} ,   
+			{1, 2, 1} 
 			};
 
-			int attackModifier = typeChart[PokemonType, Moves PokemonType];
+			float attackModifier = typeChart[(int)attackType, (int)defenseType];
 
 			return attackModifier;
 		}
@@ -81,111 +74,111 @@ namespace Pokemanz.Core
 
 		public static int CatchRate(int hpMax, int hpCurrent, int ballCatchRateModifer, int statusConditionModifier)
 		{
-			int catchRate = max(((3 * hpMax) - (2 * hpCurrent)) * ( ballCatchRateModifer / (3 * hpMax), 1)) + statusConditionModifier;
+			int catchRate = Math.Max((3 * hpMax - 2 * hpCurrent) * ballCatchRateModifer / (3 * hpMax), 1) + statusConditionModifier;
 			return catchRate;
 		}
 
 		public static int ShakeProbability(int catchRate)
 		{
-			int shakeProbability;
-		if (catchRate = Enumerable.Range(0, 1)){
-				return shakeProbability = 63;
+		if (catchRate > 0 && catchRate < 1)
+			{
+				return 63;
 			}
 		else if (catchRate == 2)
 			{
-				return shakeProbability = 75;
+				return 75;
 			}
 			else if (catchRate == 3)
 			{
-				return shakeProbability = 84;
+				return 84;
 			}
 			else if (catchRate == 4)
 			{
-				return shakeProbability = 90;
+				return 90;
 			}
 			else if (catchRate == 5)
 			{
-				return shakeProbability = 95;
+				return 95;
 			}
-			else if (catchRate = Enumerable.Range(6, 7))
+			else if (catchRate > 6 && catchRate < 7)
 			{
-				return shakeProbability = 103;
+				return 103;
 			}
-			else if (catchRate = Enumerable.Range(8, 10))
+			else if (catchRate > 8 && catchRate < 10)
 			{
-				return shakeProbability = 113;
+				return 113;
 			}
-			else if (catchRate = Enumerable.Range(11, 15))
+			else if (catchRate > 11 && catchRate < 15)
 			{
-				return shakeProbability = 126;
+				return 126;
 			}
-			else if (catchRate = Enumerable.Range(16, 20))
+			else if (catchRate > 16 && catchRate < 20)
 			{
-				return shakeProbability = 134;
+				return 134;
 			}
-			else if (catchRate = Enumerable.Range(21, 30))
+			else if (catchRate > 21 && catchRate < 30)
 			{
-				return shakeProbability = 149;
+				return 149;
 			}
-			else if (catchRate = Enumerable.Range(31, 40))
+			else if (catchRate > 31 && catchRate < 40)
 			{
-				return shakeProbability = 160;
+				return 160;
 			}
-			else if (catchRate = Enumerable.Range(41, 50))
+			else if (catchRate > 41 && catchRate < 50)
 			{
-				return shakeProbability = 169;
+				return 169;
 			}
-			else if (catchRate = Enumerable.Range(51, 60))
+			else if (catchRate > 51 && catchRate < 60)
 			{
-				return shakeProbability = 177;
+				return 177;
 			}
-			else if (catchRate = Enumerable.Range(61, 80))
+			else if (catchRate > 61 && catchRate < 80)
 			{
-				return shakeProbability = 191;
+				return 191;
 			}
-			else if (catchRate = Enumerable.Range(81, 100))
+			else if (catchRate > 81 && catchRate < 100)
 			{
-				return shakeProbability = 201;
+				return 201;
 			}
-			else if (catchRate = Enumerable.Range(101, 120))
+			else if (catchRate > 101 && catchRate < 120)
 			{
-				return shakeProbability = 211;
+				return 211;
 			}
-			else if (catchRate = Enumerable.Range(121, 140))
+			else if (catchRate > 121 && catchRate < 140)
 			{
-				return shakeProbability = 220;
+				return 220;
 			}
-			else if (catchRate = Enumerable.Range(141, 160))
+			else if (catchRate > 141 && catchRate < 160)
 			{
-				return shakeProbability = 227;
+				return 227;
 			}
-			else if (catchRate = Enumerable.Range(161, 180))
+			else if (catchRate > 161 && catchRate < 180)
 			{
-				return shakeProbability = 234;
+				return 234;
 			}
-			else if (catchRate = Enumerable.Range(181, 200))
+			else if (catchRate > 181 && catchRate < 200)
 			{
-				return shakeProbability = 240;
+				return 240;
 			}
-			else if (catchRate = Enumerable.Range(201, 220))
+			else if (catchRate > 201 && catchRate < 220)
 			{
-				return shakeProbability = 246;
+				return 246;
 			}
-			else if (catchRate = Enumerable.Range(221, 240))
+			else if (catchRate > 221 && catchRate < 240)
 			{
-				return shakeProbability = 251;
+				return 251;
 			}
-			else if (catchRate = Enumerable.Range(241, 254))
+			else if (catchRate > 241 && catchRate < 254)
 			{
-				return shakeProbability = 253;
+				return 253;
 			}
 			else if (catchRate == 255)
 			{
-				return shakeProbability = 255;
+				return 255;
 			}
 			else
 			{
-				throw new ArgumentOutOfRangeException(nameof(shakeProbability));
+				throw new ArgumentOutOfRangeException(nameof(catchRate));
 			}
 		}
 
