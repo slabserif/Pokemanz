@@ -1,0 +1,5 @@
+Id	Name	Type	Category	PP	BasePower	Accuracy
+10	Scratch	Normal	Physical	35	40	100
+16	Gust	Flying	Physical	35	40	100
+33	Tackle	Normal	Physical	35	50	100
+84	Thunder Shock	Electric	Special	30	40	100
