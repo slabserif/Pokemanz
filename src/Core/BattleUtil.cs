@@ -5,8 +5,64 @@ using System.Threading.Tasks;
 
 namespace Pokemanz.Core
 {
-    public class BattleUtil
-    {
+	public class BattleUtil
+	{
+
+		public static bool CheckStatusFreeze()
+		{
+			int checkForRelease = PokemanzUtil.GetRandomNumber(0, 100);
+			if (checkForRelease >= 20)
+			{
+				return true; //TODO: released from freeze
+			}
+			else
+			{
+				return false; //TODO: still is frozen
+			}
+		}
+
+		public static bool CheckStatusParalyzed()
+		{
+			int checkForCanAttack = PokemanzUtil.GetRandomNumber(0, 100);
+			if (checkForCanAttack >= 75)
+			{
+				return true;//TODO: can attack
+			}
+			else
+			{
+				return false; //TODO: cant attack
+			}
+		}
+
+		public static bool CheckStatusSleep()
+		{
+			//TODO: exclusive or not?
+			int sleepNumTurns = PokemanzUtil.GetRandomNumber(1, 7);
+			int sleepTurn = 0;
+			while (sleepTurn <= sleepNumTurns)
+			{
+				sleepTurn++;
+				//TODO: status condition still there;
+			}
+			return true; //TODO: not asleep anymore;
+		}
+
+		//TODO: Write method of halving attack of burned pokemon 
+		public static int PoisonOrBurnDamage(int hpMax)
+		{
+			int damage = hpMax * (1 / 8);
+			; return damage;
+		}
+
+		public static int BadlyPoisonedDamage(int hpMax)
+		{
+			int turnNum = 1;
+			int damage = hpMax * (turnNum / 16);
+			turnNum++;
+			return damage;
+		}
+
+
 		public static float DamageEffectiveness(PokemonType attackType, PokemonType defenseType)
 		{
 
@@ -38,8 +94,8 @@ namespace Pokemanz.Core
 		//TODO: integer percentage?
 		public static int GetDamageRandomizationModifier()
 		{
-			int damageRandomizationModifier = PokemanzUtil.GetRandomNumber(217, 255); 
-			damageRandomizationModifier = ((damageRandomizationModifier * 100)/255)/100;
+			int damageRandomizationModifier = PokemanzUtil.GetRandomNumber(217, 255);
+			damageRandomizationModifier = ((damageRandomizationModifier * 100) / 255) / 100;
 			return damageRandomizationModifier;
 		}
 
@@ -71,7 +127,7 @@ namespace Pokemanz.Core
 		//TODO: connect SameTypeAttackBonus() to int sameAttackTypeBonus
 		public static int GetDamageModifier(int damageRandomizationModifier, float attackTypeModifier, int sameAttackTypeBonus, int critical)
 		{
-		//TODO: add "other" variable to equation to account for held items
+			//TODO: add "other" variable to equation to account for held items
 			int modifier = sameAttackTypeBonus * (int)attackTypeModifier * critical * damageRandomizationModifier;
 			return modifier;
 		}
@@ -90,6 +146,18 @@ namespace Pokemanz.Core
 
 			int damage = ((2 * level + 10 / 250) * (attackStat / defenseStat) * Move.basePower + 2) * modifier;
 			return damage;
-
 		}
+
+		//TODO: Method for calculating current accuracy of pokemon in a battle in case its accuracy has been affected by moves used against it. Called "Stat Modifiers" in http://bulbapedia.bulbagarden.net/wiki/Accuracy
+		public static bool CheckForMiss(int pokemonAccuracyModified, int pokemonEvasionModified, Move Accuracy)
+		{
+			float accuracyBase = Move.Accuracy / 100;
+			float p = accuracyBase * (pokemonAccuracyModified / pokemonEvasionModified);
+			if (p > 1)
+			{
+				return true; //Hit success
+			}
+			return false; //Hit missed
+		}
+	}
 }
