@@ -7,6 +7,34 @@ namespace Pokemanz.Core
 {
 	public class BattleUtil
 	{
+		//TODO: Think this is trying to do too much
+		public static bool CheckIfEscapeSuccess(Pokemon Speed, int opposingSpeed)
+		{
+			int timesAttempted = 1;
+			opposingSpeed /= 4; //TODO: what is 'mod 256'?
+			if (opposingSpeed == 0)
+			{
+				return true; //escape success
+			}
+
+			int checkEscape = ((Pokemon.Speed * 32) / opposingSpeed) + (30 * timesAttempted);
+			if (checkEscape > 255)
+			{
+				return true; //escape success
+			}
+
+			int checkForEscape = PokemanzUtil.GetRandomNumber(0, 255);
+			if (checkForEscape < checkEscape)
+			{
+				return true; //escape success
+			}
+			else
+			{
+			 timesAttempted++; //TODO: is this actually going to increment?
+							   //TODO: players turn is over?
+				return false;
+			}
+		}
 
 		public static bool CheckStatusFreeze()
 		{
