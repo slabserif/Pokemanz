@@ -25,11 +25,13 @@ namespace Pokemanz.Core
 		public int BaseExpGiven { get; private set; }
 		public int BaseCatchRate { get; private set; }
 
-		public int MoveSlot1 { get; private set; }
-		public int MoveSlot2 { get; private set; }
-		public int MoveSlot3 { get; private set; }
-		public int MoveSlot4 { get; private set; }
-
+		public List<Move> Moves { get; private set; } = new List<Move>(4);
+		
+		public void AssignMove(Move move, int slotNumber)
+		{
+			this.Moves[slotNumber - 1] = move;
+		}
+		
 		public bool AddExperience(int expEarned)
 		{
 			int levelBefore = GetLevel();
@@ -155,23 +157,23 @@ namespace Pokemanz.Core
 
 	public enum PokemonType
 	{
-		Normal,
-		Fighting,
-		Flying,
-		Poison,
-		Ground,
-		Rock,
-		Bug,
-		Ghost,
-		Steel,
-		Fire,
-		Water,
-		Grass,
-		Electric,
-		Psychic,
-		Ice,
-		Dragon,
-		Dark
+		Normal = 0,
+		Fighting = 1,
+		Flying = 2,
+		Poison = 3,
+		Ground = 4,
+		Rock = 5,
+		Bug = 6,
+		Ghost = 7,
+		Steel = 8,
+		Fire = 9,
+		Water = 10,
+		Grass = 11,
+		Electric = 12,
+		Psychic = 13,
+		Ice = 14, 
+		Dragon = 15,
+		Dark = 16
 	}
 
 	public enum PokemonExpType
@@ -180,7 +182,7 @@ namespace Pokemanz.Core
 		MedFast
 	}
 
-	public class Moves
+	public class Move
 	{
 		public string Name { get; private set; }
 		public int Id { get; private set; }
@@ -189,7 +191,6 @@ namespace Pokemanz.Core
 		public int PP { get; private set; }
 		public int BasePower { get; private set; }
 		public int Accuracy { get; private set; }
-
 	}
 
 	public enum MoveCategory
@@ -213,6 +214,8 @@ namespace Pokemanz.Core
 						return 1.5f;
 					case PokeballType.UltraBall:
 						return 2;
+					case PokeballType.MasterBall:
+						return 255;
 					default:
 						throw new ArgumentOutOfRangeException(nameof(this.Type));
 				}
@@ -225,7 +228,8 @@ namespace Pokemanz.Core
 	{
 		PokeBall,
 		GreatBall,
-		UltraBall
+		UltraBall,
+		MasterBall
 	}
 
 	public class StatusConditions
@@ -237,15 +241,12 @@ namespace Pokemanz.Core
 				switch (this.Type)
 				{
 					case StatusType.Paralyze:
-						return 5;
-					case StatusType.Sleep:
-						return 10;
+					case StatusType.Poison:
 					case StatusType.Burn:
 						return 5;
+					case StatusType.Sleep:
 					case StatusType.Freeze:
 						return 10;
-					case StatusType.Poison:
-						return 5;
 					default:
 						throw new ArgumentOutOfRangeException(nameof(this.Type));
 				}

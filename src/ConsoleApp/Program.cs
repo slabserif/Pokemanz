@@ -7,10 +7,6 @@ using System.Threading.Tasks;
 
 namespace Pokemanz.ConsoleApp
 {
-	//QUESTIONS
-	//Where to put "this.thing"
-	//How to choose a random class so i can print it
-	//How do i return a pokemon based on user choice and print it?
 	class Program
 	{
 		static Pokemon ChoosePokemon()
