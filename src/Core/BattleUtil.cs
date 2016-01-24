@@ -8,22 +8,23 @@ namespace Pokemanz.Core
 	public class BattleUtil
 	{
 		//TODO: Think this is trying to do too much
-		public static bool CheckIfEscapeSuccess(Pokemon Speed, int opposingSpeed)
+		public static bool CheckIfEscapeSuccess(Pokemon pokemon, int opposingSpeed)
 		{
-			int timesAttempted = 1;
+			int speed = pokemon.Speed.GetValue(pokemon.GetLevel());
+						int timesAttempted = 1;
 			opposingSpeed /= 4; //TODO: what is 'mod 256'?
 			if (opposingSpeed == 0)
 			{
 				return true; //escape success
 			}
 
-			int checkEscape = ((Pokemon.Speed * 32) / opposingSpeed) + (30 * timesAttempted);
+			int checkEscape = ((speed * 32) / opposingSpeed) + (30 * timesAttempted);
 			if (checkEscape > 255)
 			{
 				return true; //escape success
 			}
-
-			int checkForEscape = PokemanzUtil.GetRandomNumber(0, 255);
+			
+			int checkForEscape = PokemanzUtil.GetRandomNumber(0, 256);
 			if (checkForEscape < checkEscape)
 			{
 				return true; //escape success
@@ -38,55 +39,32 @@ namespace Pokemanz.Core
 
 		public static bool CheckStatusFreeze()
 		{
-			int checkForRelease = PokemanzUtil.GetRandomNumber(0, 100);
-			if (checkForRelease >= 20)
-			{
-				return true; //TODO: released from freeze
-			}
-			else
-			{
-				return false; //TODO: still is frozen
-			}
+			int checkForRelease = PokemanzUtil.GetRandomNumber(0, 101);
+			return checkForRelease >= 20;
 		}
 
 		public static bool CheckStatusParalyzed()
 		{
-			int checkForCanAttack = PokemanzUtil.GetRandomNumber(0, 100);
-			if (checkForCanAttack >= 75)
-			{
-				return true;//TODO: can attack
-			}
-			else
-			{
-				return false; //TODO: cant attack
-			}
+			int checkForCanAttack = PokemanzUtil.GetRandomNumber(0, 101);
+			return checkForCanAttack >= 75;
 		}
 
-		public static bool CheckStatusSleep()
-		{
-			//TODO: exclusive or not?
-			int sleepNumTurns = PokemanzUtil.GetRandomNumber(1, 7);
-			int sleepTurn = 0;
-			while (sleepTurn <= sleepNumTurns)
-			{
-				sleepTurn++;
-				//TODO: status condition still there;
-			}
-			return true; //TODO: not asleep anymore;
+		public static int GetSleepTurns()
+		{ 
+			int sleepNumTurns = PokemanzUtil.GetRandomNumber(1, 8);
+			return sleepNumTurns;
 		}
 
 		//TODO: Write method of halving attack of burned pokemon 
 		public static int PoisonOrBurnDamage(int hpMax)
 		{
 			int damage = hpMax * (1 / 8);
-			; return damage;
+			return damage;
 		}
 
-		public static int BadlyPoisonedDamage(int hpMax)
+		public static int BadlyPoisonedDamage(int hpMax, int turnNum)
 		{
-			int turnNum = 1;
-			int damage = hpMax * (turnNum / 16);
-			turnNum++;
+			int damage = (int)(hpMax * (turnNum / 16.0));
 			return damage;
 		}
 
@@ -122,15 +100,15 @@ namespace Pokemanz.Core
 		//TODO: integer percentage?
 		public static int GetDamageRandomizationModifier()
 		{
-			int damageRandomizationModifier = PokemanzUtil.GetRandomNumber(217, 255);
+			int damageRandomizationModifier = PokemanzUtil.GetRandomNumber(217, 256);
 			damageRandomizationModifier = ((damageRandomizationModifier * 100) / 255) / 100;
 			return damageRandomizationModifier;
 		}
 
 		//TODO: Get move type?
-		public static float SameTypeAttackBonus(Pokemon Type1, Move Type)
+		public static float SameTypeAttackBonus(Pokemon pokemon, Move move)
 		{
-			if (Type1 = Type)
+			if (pokemon.Type1 == move.Type)
 			{
 				return 1.5f;
 			}
@@ -143,7 +121,7 @@ namespace Pokemanz.Core
 		public static int CriticalHit()
 		{
 			//TODO: add extra critical hit stages based on high-crit ratio specific moves and held items
-			int checkForCritical = PokemanzUtil.GetRandomNumber(0, 1000);
+			int checkForCritical = PokemanzUtil.GetRandomNumber(0, 1001);
 			checkForCritical /= 100;
 			if (checkForCritical >= 6.25)
 			{
@@ -161,31 +139,35 @@ namespace Pokemanz.Core
 		}
 
 		//TODO: Get level? Help with getting classes
-		public static int CalculateDamage(int modifier, int level, int attack, int defense, MoveCategory category, Move BasePower, Pokemon Attack, Pokemon Defense, Pokemon SpAttack, Pokemon SpDefense)
+		//public static int CalculateDamage(int modifier, int level, int attack, int defense, MoveCategory category, int basePower, int attack, int pokemonDefense, int pokemonSpAttack, int pokemonSpDefense)
+		public static int CalculateDamage(Pokemon attackingPokemon, Pokemon defendingPokemon, Move move, int modifier)
 		{
-			int attackStat = Pokemon.attack;
-			int defenseStat = Pokemon.defense;
+			int attackingPokemonLevel = attackingPokemon.GetLevel();
+			int defendingPokemonLevel = defendingPokemon.GetLevel();
+			int attackStat;
+			int defenseStat;
 
-			if (category = Special)
+			if (move.Category == MoveCategory.Special)
 			{
-				int attackStat = Pokemon.spAttack;
-				int defenseStat = Pokemon.spDefense;
+				attackStat = attackingPokemon.SpAttack.GetValue(attackingPokemonLevel);
+				defenseStat = defendingPokemon.SpDefense.GetValue(defendingPokemonLevel);
+			}
+			else
+			{
+				attackStat = attackingPokemon.Attack.GetValue(attackingPokemonLevel);
+				defenseStat = defendingPokemon.Defense.GetValue(defendingPokemonLevel);
 			}
 
-			int damage = ((2 * level + 10 / 250) * (attackStat / defenseStat) * Move.basePower + 2) * modifier;
+			int damage = ((2 * attackingPokemonLevel + 10 / 250) * (attackStat / defenseStat) * move.BasePower + 2) * modifier;
 			return damage;
 		}
 
 		//TODO: Method for calculating current accuracy of pokemon in a battle in case its accuracy has been affected by moves used against it. Called "Stat Modifiers" in http://bulbapedia.bulbagarden.net/wiki/Accuracy
-		public static bool CheckForMiss(int pokemonAccuracyModified, int pokemonEvasionModified, Move Accuracy)
+		public static bool CheckForMiss(float pokemonAccuracy, float pokemonEvasion, float moveAccuracy)
 		{
-			float accuracyBase = Move.Accuracy / 100;
-			float p = accuracyBase * (pokemonAccuracyModified / pokemonEvasionModified);
-			if (p > 1)
-			{
-				return true; //Hit success
-			}
-			return false; //Hit missed
+			float accuracyBase = moveAccuracy / 100;
+			float p = accuracyBase * (pokemonAccuracy / pokemonEvasion);
+			return p > 1;
 		}
 	}
 }

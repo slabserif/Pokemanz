@@ -98,6 +98,8 @@ namespace Pokemanz.Core
 			return (int)newStat;
 		}
 
+
+		//todo connect with Pokemon class & dont pass in level 
 		public virtual int GetValue(int level)
 		{
 			int statValue = CalcStat(level);
