@@ -9,9 +9,6 @@ namespace Pokemanz.Core
 	public static class PokemanzUtil
 	{
 		private static Random random { get; } = new Random();
-		//TODO: Pokemon stat calculator
-		//Stat Research is derived from: http://bulbapedia.bulbagarden.net/wiki/Statistic
-		
 
 		internal static bool IsOdd(int value)
 		{

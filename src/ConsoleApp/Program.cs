@@ -60,6 +60,9 @@ namespace Pokemanz.ConsoleApp
 		{
 			Pokemon starter = ChoosePokemon();
 			Console.WriteLine("Starter Pokemon: " + starter.Name);
+			Player newPlayer = new Player();
+			newPlayer.AssignPokemon(starter, 1);
+			Console.WriteLine("Pokemon Assigned: " + newPlayer.playerPokemonList[0].Name);
 			Console.ReadLine();
 
 		}
@@ -79,5 +82,6 @@ namespace Pokemanz.ConsoleApp
 			Console.WriteLine("Sprite Row: " + PokemanzUtil.GetFrontSpriteRow(pokemon.Id));
 			Console.WriteLine("Sprite Col: " + PokemanzUtil.GetFrontSpriteCol(pokemon.Id));
 		}
+
 	}
 }

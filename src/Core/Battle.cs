@@ -19,7 +19,13 @@ namespace Pokemanz.Core
 			public int currentAccuracy { get; private set; }
 			public int currentEvasion { get; private set; }
 			
-			public int currentStatusCondition { get; private set; }
+			public int currentStatusCondition { get; private set; } 
+		}
+
+		public class battlingPokemonMoves
+		{
+			public int currentPP { get; private set; }
+			public int currentBasePower { get; private set; }
 		}
 
 		//TODO: add corner cases for priority such as move with priority effects and using an item or switching out pokemon
@@ -33,16 +39,7 @@ namespace Pokemanz.Core
 			if (playerSpeed == opponentSpeed)
 			{
 				int playerGoesFirst = PokemanzUtil.GetRandomNumber(0, 2);
-
-				if (playerGoesFirst == 1)
-				{
-					return true;
-				}
-				else
-				{
-					return false;
-				}
-
+			return playerGoesFirst == 1;
 			}
 			return playerSpeed > opponentSpeed;
 		}
@@ -78,11 +75,11 @@ namespace Pokemanz.Core
 			}
 		}
 
-		public static bool PlayerOutofPokemon(Player pokemon)
+		public static bool PlayerOutofPokemon(Player player) //This would be executed every time a player's pokemon faints.
 		{
-			for (int i = 0; i < playerPokemonList.Count; i++) // Loop with for.
+			for (int i = 0; i < player.playerPokemonList.Length; i++) 
 			{
-				if (playerPokemonList[i].currentHp == 0)
+				if (player.playerPokemonList[i].currentHp == 0)
 				{
 					continue;
 				}

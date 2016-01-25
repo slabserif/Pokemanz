@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Pokemanz.Core.compiler
+namespace Pokemanz.Core
 {
 	public class Player
 	{
@@ -14,7 +14,7 @@ namespace Pokemanz.Core.compiler
 		public int moneyCount { get; private set; }
 		public int pokedexCount { get; private set; }
 
-		public List<Pokemon> playerPokemonList { get; private set; } = new List<Pokemon>(6);
+		public Pokemon[] playerPokemonList { get; private set; } = new Pokemon[6];
 
 		public void AssignPokemon(Pokemon playerPokemon, int partySlotNumber)
 		{
