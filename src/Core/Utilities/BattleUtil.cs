@@ -7,7 +7,102 @@ namespace Pokemanz.Core
 {
 	public class BattleUtil
 	{
-		
+		//TODO: add corner cases for priority such as move with priority effects and using an item or switching out pokemon
+		public static bool GetPlayerGoesFirst(Pokemon playerPokemon, Pokemon opponentPokemon) //evaluated per turn
+		{
+			int playerPokemonLevel = playerPokemon.GetLevel();
+			int opponentPokemonLevel = opponentPokemon.GetLevel();
+			int playerSpeed = playerPokemon.Speed.GetValue(playerPokemonLevel);
+			int opponentSpeed = opponentPokemon.Speed.GetValue(opponentPokemonLevel);
+
+			if (playerSpeed == opponentSpeed)
+			{
+				int playerGoesFirst = PokemanzUtil.GetRandomNumber(0, 2);
+				return playerGoesFirst == 1;
+			}
+			return playerSpeed > opponentSpeed;
+		}
+
+		public enum PlayerActionType
+		{
+			Fight,
+			Bag,
+			PKMN,
+			Run
+		}
+
+		//HELP: Doesn't seem right
+		public Pokemon PlayerSwitchPokemon(Pokemon playerPokemon, Pokemon chosenPokemon)
+		{
+			playerPokemon = chosenPokemon;
+			return playerPokemon;
+		}
+
+		/*public static void GetPlayerAction(Pokemon playerPokemon, Pokemon opponentPokemon)
+		{
+			PlayerActionType playerAction = new PlayerActionType();
+			switch (playerAction)
+			{
+				case PlayerActionType.Fight:
+					//TODO: get player input of move chosen
+					break;
+				case PlayerActionType.Run:
+					CheckIfEscapeSuccess(playerPokemon, opponentPokemon);
+					break;
+			}
+		}*/
+
+		public void PokemonAttacks(Pokemon attackingPokemon, Pokemon defendingPokemon)
+		{
+			Move move = attackingPokemon.Moves[0]; //TODO: get actual used move
+			float moveAccuracy = 1.0f; //TODO: Dummy data. Remove once excel implemented
+			bool checkForMiss = CheckForMiss(attackingPokemon.Accuracy, attackingPokemon.Evasion, moveAccuracy); //Move excel repository needed
+
+			if (checkForMiss)
+			{
+				float sameTypeAttackBonus = SameTypeAttackBonus(attackingPokemon, move);
+				int damageRandomizationModifier = GetDamageRandomizationModifier();
+				float attackTypeModifier = DamageEffectiveness(attackingPokemon.Type1, defendingPokemon.Type1);
+				int critical = CriticalHit();
+				int modifier = GetDamageModifier(damageRandomizationModifier, attackTypeModifier, (int)sameTypeAttackBonus, critical); //TODO: sameTypeAttackBonus should be a float
+
+				int damage = CalculateDamage(attackingPokemon, defendingPokemon, move, modifier); //HELP Move move and int modifier?
+				defendingPokemon.hpModifier += damage; //Best way? BaseHp never gets touched and a modifier is compared to it. OR Just modify the HP directly?
+			}
+			//TODO: End turn
+		}
+
+		//TODO: Think this is trying to do too much
+		public static bool CheckIfEscapeSuccess(Pokemon playerPokemon, Pokemon opponentPokemon)
+		{
+			int playerSpeed = playerPokemon.Speed.GetValue(playerPokemon.GetLevel());
+			int opponentSpeed = playerPokemon.Speed.GetValue(playerPokemon.GetLevel());
+			int timesAttempted = 1;
+			opponentSpeed /= 4; //TODO: what is 'mod 256'?
+			if (opponentSpeed == 0)
+			{
+				return true;
+			}
+
+			int checkEscape = ((playerSpeed * 32) / opponentSpeed) + (30 * timesAttempted);
+			if (checkEscape > 255)
+			{
+				return true;
+			}
+
+			int checkForEscape = PokemanzUtil.GetRandomNumber(0, 256);
+			if (checkForEscape < checkEscape)
+			{
+				return true;
+			}
+			else
+			{
+				timesAttempted++; //TODO: is this actually going to increment?
+								  //TODO: players turn is over?
+				return false;
+			}
+		}
+
 		public static bool CheckStatusFreeze()
 		{
 			int checkForRelease = PokemanzUtil.GetRandomNumber(0, 101);
@@ -102,10 +197,10 @@ namespace Pokemanz.Core
 		}
 
 		//TODO: connect SameTypeAttackBonus() to int sameAttackTypeBonus
-		public static int GetDamageModifier(int damageRandomizationModifier, float attackTypeModifier, int sameAttackTypeBonus, int critical)
+		public static int GetDamageModifier(int damageRandomizationModifier, float attackTypeModifier, int sameTypeAttackBonus, int critical)
 		{
 			//TODO: add "other" variable to equation to account for held items
-			int modifier = sameAttackTypeBonus * (int)attackTypeModifier * critical * damageRandomizationModifier;
+			int modifier = sameTypeAttackBonus * (int)attackTypeModifier * critical * damageRandomizationModifier;
 			return modifier;
 		}
 
