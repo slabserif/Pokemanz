@@ -63,6 +63,10 @@ namespace Pokemanz.ConsoleApp
 			Player newPlayer = new Player();
 			newPlayer.AssignPokemon(starter, 1);
 			Console.WriteLine("Pokemon Assigned: " + newPlayer.playerPokemonList[0].Name);
+			Console.WriteLine(" ");
+			IPokemonRepository repository = PokemonExcelRepository.Create();
+			Pokemon randomPokemon = repository.GetRandomPokemon();
+			Console.WriteLine("Random Pokemon: " + randomPokemon.Name);
 			Console.ReadLine();
 
 		}

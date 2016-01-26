@@ -109,8 +109,6 @@ namespace Pokemanz.Core
 			return modifier;
 		}
 
-		//TODO: Get level? Help with getting classes
-		//public static int CalculateDamage(int modifier, int level, int attack, int defense, MoveCategory category, int basePower, int attack, int pokemonDefense, int pokemonSpAttack, int pokemonSpDefense)
 		public static int CalculateDamage(Pokemon attackingPokemon, Pokemon defendingPokemon, Move move, int modifier)
 		{
 			int attackingPokemonLevel = attackingPokemon.GetLevel();

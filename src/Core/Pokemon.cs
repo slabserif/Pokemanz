@@ -25,6 +25,20 @@ namespace Pokemanz.Core
 		public int BaseExpGiven { get; private set; }
 		public int BaseCatchRate { get; private set; }
 
+		//HELP
+		//Changed "private set" ? 
+		//do these belong on class Pokemon?
+		//How do you add initial values?
+		public int hpModifier { get; set; }
+		public int attackModifier { get; set; }
+		public int defenseModifier { get; set; }
+		public int spAttackModifier { get; set; }
+		public int spDefenseModifier { get; set; }
+		public int speedModifier { get; set; }
+		public int Accuracy { get; set; }
+		public int Evasion { get; set; }
+		public int statusCondition { get; set; }
+
 		public List<Move> Moves { get; private set; } = new List<Move>(4);
 		
 		public void AssignMove(Move move, int slotNumber)
@@ -193,10 +207,18 @@ namespace Pokemanz.Core
 		public int PP { get; private set; }
 		public int BasePower { get; private set; }
 		public int Accuracy { get; private set; }
+
+		//HELP
+		//Changed "private set" ? 
+		//do these belong on class Move?
+		//How do you add initial values?
+		public int ppModifier { get; set; }
+		public int basePowerModifier { get; set; }
 	}
 
 	public enum MoveCategory
 	{
+		None, //HELP is this needed?
 		Physical,
 		Special,
 		Status
