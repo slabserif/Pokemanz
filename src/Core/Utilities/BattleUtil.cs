@@ -5,71 +5,34 @@ using System.Threading.Tasks;
 
 namespace Pokemanz.Core
 {
-	public class BattleUtil
+	public static class BattleUtil
 	{
-		//TODO: add corner cases for priority such as move with priority effects and using an item or switching out pokemon
-		public static bool GetPlayerGoesFirst(Pokemon playerPokemon, Pokemon opponentPokemon) //evaluated per turn
-		{
-			int playerPokemonLevel = playerPokemon.GetLevel();
-			int opponentPokemonLevel = opponentPokemon.GetLevel();
-			int playerSpeed = playerPokemon.Speed.GetValue(playerPokemonLevel);
-			int opponentSpeed = opponentPokemon.Speed.GetValue(opponentPokemonLevel);
 
-			if (playerSpeed == opponentSpeed)
-			{
-				int playerGoesFirst = PokemanzUtil.GetRandomNumber(0, 2);
-				return playerGoesFirst == 1;
-			}
-			return playerSpeed > opponentSpeed;
-		}
-
-		public enum PlayerActionType
+		/*public void UseItem(string chosenItem) //HELP
 		{
-			Fight,
-			Bag,
-			PKMN,
-			Run
-		}
-
-		//HELP: Doesn't seem right
-		public Pokemon PlayerSwitchPokemon(Pokemon playerPokemon, Pokemon chosenPokemon)
-		{
-			playerPokemon = chosenPokemon;
-			return playerPokemon;
-		}
-
-		/*public static void GetPlayerAction(Pokemon playerPokemon, Pokemon opponentPokemon)
-		{
-			PlayerActionType playerAction = new PlayerActionType();
-			switch (playerAction)
-			{
-				case PlayerActionType.Fight:
-					//TODO: get player input of move chosen
-					break;
-				case PlayerActionType.Run:
-					CheckIfEscapeSuccess(playerPokemon, opponentPokemon);
-					break;
+			if (chosenItem == typeof(PokeBall){
+				CatchPokemonUtil.GetCatchRate(hpMax, hpCurrent, ballCatchRateModifer, statusConditionModifier);
+				GetShakeProbability(catchRate);
+				ShakeCheck(shakeProbability);
 			}
 		}*/
 
-		public void PokemonAttacks(Pokemon attackingPokemon, Pokemon defendingPokemon)
+		public void PokemonAttacks(Pokemon attackingPokemon, Pokemon defendingPokemon, Move activeMove) //TODO: change Move activeMove to attackingPokemon.activeMove. Does activeMove need to be a Pokemon property?
 		{
-			Move move = attackingPokemon.Moves[0]; //TODO: get actual used move
 			float moveAccuracy = 1.0f; //TODO: Dummy data. Remove once excel implemented
 			bool checkForMiss = CheckForMiss(attackingPokemon.Accuracy, attackingPokemon.Evasion, moveAccuracy); //Move excel repository needed
 
 			if (checkForMiss)
 			{
-				float sameTypeAttackBonus = SameTypeAttackBonus(attackingPokemon, move);
+				float sameTypeAttackBonus = SameTypeAttackBonus(attackingPokemon, activeMove);
 				int damageRandomizationModifier = GetDamageRandomizationModifier();
 				float attackTypeModifier = DamageEffectiveness(attackingPokemon.Type1, defendingPokemon.Type1);
 				int critical = CriticalHit();
 				int modifier = GetDamageModifier(damageRandomizationModifier, attackTypeModifier, (int)sameTypeAttackBonus, critical); //TODO: sameTypeAttackBonus should be a float
 
-				int damage = CalculateDamage(attackingPokemon, defendingPokemon, move, modifier); //HELP Move move and int modifier?
-				defendingPokemon.hpModifier += damage; //Best way? BaseHp never gets touched and a modifier is compared to it. OR Just modify the HP directly?
+				int damage = CalculateDamage(attackingPokemon, defendingPokemon, activeMove, modifier); 
+				defendingPokemon.hpModifier += damage; 
 			}
-			//TODO: End turn
 		}
 
 		//TODO: Think this is trying to do too much
