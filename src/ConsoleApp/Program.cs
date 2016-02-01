@@ -132,6 +132,13 @@ namespace Pokemanz.ConsoleApp
 					Console.WriteLine();
 					break;
 				}
+				bool isPlayerPokemonDead = battle.isCurrentPokemonDead(playerPokemon);
+				if (isPlayerPokemonDead)
+				{
+					string chosenPokemon = Console.ReadLine();
+					int chosenSlot = int.Parse(chosenPokemon);
+					battle.PlayerSwitchPokemon(chosenSlot);
+				}
 			}
 		}
 

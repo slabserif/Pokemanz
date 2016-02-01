@@ -17,7 +17,6 @@ namespace Pokemanz.Core
 			this.player2State = new PlayerState(player2);
 		}
 
-
 		public void PlayerSwitchPokemon(int pokemonSlot)
 		{
 			this.player1State.ActivePokemon = this.player1State.Player.playerPokemonList[pokemonSlot];
@@ -78,23 +77,22 @@ namespace Pokemanz.Core
 
 		private bool CheckBattleOverPlayer(PlayerState playerState)
 		{
-			//TODO check if active pokemon dead
-			bool outOfPokemon = PlayerOutofPokemon(playerState.Player);
-			if (outOfPokemon)
-			{
-				playerState.Condition = PlayerCondition.OutOfPokemon;
-			}
-			switch (playerState.Condition)
-			{
-				case PlayerCondition.Escaped:
-					return true;
-				case PlayerCondition.OutOfPokemon:
-					return true;
-				case PlayerCondition.Normal:
-					return false;
-				default:
-					throw new ArgumentOutOfRangeException();
-			}
+				bool outOfPokemon = PlayerOutofPokemon(playerState.Player);
+				if (outOfPokemon)
+				{
+					playerState.Condition = PlayerCondition.OutOfPokemon;
+				}
+				switch (playerState.Condition)
+				{
+					case PlayerCondition.Escaped:
+						return true;
+					case PlayerCondition.OutOfPokemon:
+						return true;
+					case PlayerCondition.Normal:
+						return false;
+					default:
+						throw new ArgumentOutOfRangeException();
+				}
 		}
 
 		public bool CheckIfBattleOver()
@@ -113,7 +111,7 @@ namespace Pokemanz.Core
 			//TODO Get random move
 		}
 
-		public static bool PlayerOutofPokemon(Player player) //This would be executed every time a player's pokemon faints.
+		public static bool PlayerOutofPokemon(Player player)
 		{
 			for (int i = 0; i < player.playerPokemonList.Length; i++)
 			{
