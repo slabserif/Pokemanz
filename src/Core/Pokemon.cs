@@ -39,7 +39,7 @@ namespace Pokemanz.Core
 		public int Evasion { get; set; }
 		public int statusCondition { get; set; }
 
-		public List<Move> Moves { get; private set; } = new List<Move>(4);
+		public List<Move> Moves { get; private set; } = new List<Move>(new Move[4]);
 		
 		public void AssignMove(Move move, int slotNumber)
 		{
@@ -214,6 +214,20 @@ namespace Pokemanz.Core
 		//How do you add initial values?
 		public int ppModifier { get; set; }
 		public int basePowerModifier { get; set; }
+
+		//TODO
+		public static Move GetRandom()
+		{
+			return new Move
+			{
+				Accuracy = 1,
+				BasePower = 1,
+				Category = MoveCategory.Physical,
+				Name = "Name",
+				PP = 1,
+				Type = PokemonType.Fire
+			};
+		}
 	}
 
 	public enum MoveCategory

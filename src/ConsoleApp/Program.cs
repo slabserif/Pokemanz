@@ -58,6 +58,13 @@ namespace Pokemanz.ConsoleApp
 
 		static void Main(string[] args)
 		{
+			//ChooseStarter()
+			DoBattle();
+
+		}
+
+		public static void ChooseStarter()
+		{
 			Pokemon starter = ChoosePokemon();
 			Console.WriteLine("Starter Pokemon: " + starter.Name);
 			Player newPlayer = new Player();
@@ -68,7 +75,64 @@ namespace Pokemanz.ConsoleApp
 			Pokemon randomPokemon = repository.GetRandomPokemon();
 			Console.WriteLine("Random Pokemon: " + randomPokemon.Name);
 			Console.ReadLine();
+		}
 
+		public static void DoBattle()
+		{
+
+			IPokemonRepository repository = PokemonExcelRepository.Create();
+			Pokemon playerPokemon = repository.GetRandomPokemon();
+			Move move1 = Move.GetRandom();
+			playerPokemon.AssignMove(move1, 1);
+			Pokemon wildPokemon = repository.GetRandomPokemon();
+			Move move2 = Move.GetRandom();
+			wildPokemon.AssignMove(move2, 1);
+
+			Player player = new Player();
+			player.playerPokemonList[0] = playerPokemon;
+			Player theWild = new Player();
+			theWild.playerPokemonList[0] = wildPokemon;
+			Battle battle = new Battle(player, theWild);
+
+
+			while (true)
+			{
+				string playerActionString = Console.ReadLine();
+				PlayerAction playerAction;
+				if (!Enum.TryParse(playerActionString, out playerAction))
+				{
+					Console.WriteLine("Bad choice");
+					continue;
+				}
+
+				switch (playerAction)
+				{
+					case PlayerAction.Fight:
+						string playerPokemonMove = Console.ReadLine();
+						int moveSlot = int.Parse(playerPokemonMove);
+						battle.Fight(moveSlot);
+						break;
+					case PlayerAction.Pokemon:
+						string chosenPokemon = Console.ReadLine();
+						int chosenSlot = int.Parse(chosenPokemon);
+						battle.PlayerSwitchPokemon(chosenSlot);
+						break;
+					case PlayerAction.Item:
+						string chosenItem = Console.ReadLine();
+						break;
+					case PlayerAction.Run:
+						battle.Run();
+						break;
+					default:
+						throw new ArgumentOutOfRangeException(nameof(playerAction));
+				}
+
+				if (battle.CheckIfBattleOver())
+				{
+					Console.WriteLine();
+					break;
+				}
+			}
 		}
 
 		public static void PrintStats(Pokemon pokemon)

@@ -17,12 +17,12 @@ namespace Pokemanz.Core
 			}
 		}*/
 
-		public void PokemonAttacks(Pokemon attackingPokemon, Pokemon defendingPokemon, Move activeMove) //TODO: change Move activeMove to attackingPokemon.activeMove. Does activeMove need to be a Pokemon property?
+		public static int CalculatePokemonDamage(Pokemon attackingPokemon, Pokemon defendingPokemon, Move activeMove) //TODO: change Move activeMove to attackingPokemon.activeMove. Does activeMove need to be a Pokemon property?
 		{
 			float moveAccuracy = 1.0f; //TODO: Dummy data. Remove once excel implemented
-			bool checkForMiss = CheckForMiss(attackingPokemon.Accuracy, attackingPokemon.Evasion, moveAccuracy); //Move excel repository needed
+			bool hitSuccess = CheckIfHit(attackingPokemon.Accuracy, attackingPokemon.Evasion, moveAccuracy); //Move excel repository needed
 
-			if (checkForMiss)
+			if (hitSuccess)
 			{
 				float sameTypeAttackBonus = SameTypeAttackBonus(attackingPokemon, activeMove);
 				int damageRandomizationModifier = GetDamageRandomizationModifier();
@@ -30,9 +30,39 @@ namespace Pokemanz.Core
 				int critical = CriticalHit();
 				int modifier = GetDamageModifier(damageRandomizationModifier, attackTypeModifier, (int)sameTypeAttackBonus, critical); //TODO: sameTypeAttackBonus should be a float
 
-				int damage = CalculateDamage(attackingPokemon, defendingPokemon, activeMove, modifier); 
-				defendingPokemon.hpModifier += damage; 
+				int damage = CalculateDamage(attackingPokemon, defendingPokemon, activeMove, modifier);
+				return damage;
 			}
+			return 0;
+		}
+
+		//TODO: connect SameTypeAttackBonus() to int sameAttackTypeBonus
+		private static int GetDamageModifier(int damageRandomizationModifier, float attackTypeModifier, int sameTypeAttackBonus, int critical)
+		{
+			//TODO: add "other" variable to equation to account for held items
+			int modifier = sameTypeAttackBonus * (int)attackTypeModifier * critical * damageRandomizationModifier;
+			return modifier;
+		}
+		private static int CalculateDamage(Pokemon attackingPokemon, Pokemon defendingPokemon, Move move, int modifier)
+		{
+			int attackingPokemonLevel = attackingPokemon.GetLevel();
+			int defendingPokemonLevel = defendingPokemon.GetLevel();
+			int attackStat;
+			int defenseStat;
+
+			if (move.Category == MoveCategory.Special)
+			{
+				attackStat = attackingPokemon.SpAttack.GetValue(attackingPokemonLevel);
+				defenseStat = defendingPokemon.SpDefense.GetValue(defendingPokemonLevel);
+			}
+			else
+			{
+				attackStat = attackingPokemon.Attack.GetValue(attackingPokemonLevel);
+				defenseStat = defendingPokemon.Defense.GetValue(defendingPokemonLevel);
+			}
+
+			int damage = ((2 * attackingPokemonLevel + 10 / 250) * (attackStat / defenseStat) * move.BasePower + 2) * modifier;
+			return damage;
 		}
 
 		//TODO: Think this is trying to do too much
@@ -98,7 +128,7 @@ namespace Pokemanz.Core
 		}
 
 
-		public static float DamageEffectiveness(PokemonType attackType, PokemonType defenseType)
+		private static float DamageEffectiveness(PokemonType attackType, PokemonType defenseType)
 		{
 
 			float[,] typeChart = new float[17, 17] {
@@ -127,7 +157,7 @@ namespace Pokemanz.Core
 		}
 
 		//TODO: integer percentage?
-		public static int GetDamageRandomizationModifier()
+		private static int GetDamageRandomizationModifier()
 		{
 			int damageRandomizationModifier = PokemanzUtil.GetRandomNumber(217, 256);
 			damageRandomizationModifier = ((damageRandomizationModifier * 100) / 255) / 100;
@@ -135,7 +165,7 @@ namespace Pokemanz.Core
 		}
 
 		//TODO: Get move type?
-		public static float SameTypeAttackBonus(Pokemon pokemon, Move move)
+		private static float SameTypeAttackBonus(Pokemon pokemon, Move move)
 		{
 			if (pokemon.Type1 == move.Type)
 			{
@@ -147,7 +177,7 @@ namespace Pokemanz.Core
 			}
 		}
 
-		public static int CriticalHit()
+		private static int CriticalHit()
 		{
 			//TODO: add extra critical hit stages based on high-crit ratio specific moves and held items
 			int checkForCritical = PokemanzUtil.GetRandomNumber(0, 1001);
@@ -159,42 +189,40 @@ namespace Pokemanz.Core
 			return 1;
 		}
 
-		//TODO: connect SameTypeAttackBonus() to int sameAttackTypeBonus
-		public static int GetDamageModifier(int damageRandomizationModifier, float attackTypeModifier, int sameTypeAttackBonus, int critical)
-		{
-			//TODO: add "other" variable to equation to account for held items
-			int modifier = sameTypeAttackBonus * (int)attackTypeModifier * critical * damageRandomizationModifier;
-			return modifier;
-		}
 
-		public static int CalculateDamage(Pokemon attackingPokemon, Pokemon defendingPokemon, Move move, int modifier)
-		{
-			int attackingPokemonLevel = attackingPokemon.GetLevel();
-			int defendingPokemonLevel = defendingPokemon.GetLevel();
-			int attackStat;
-			int defenseStat;
-
-			if (move.Category == MoveCategory.Special)
-			{
-				attackStat = attackingPokemon.SpAttack.GetValue(attackingPokemonLevel);
-				defenseStat = defendingPokemon.SpDefense.GetValue(defendingPokemonLevel);
-			}
-			else
-			{
-				attackStat = attackingPokemon.Attack.GetValue(attackingPokemonLevel);
-				defenseStat = defendingPokemon.Defense.GetValue(defendingPokemonLevel);
-			}
-
-			int damage = ((2 * attackingPokemonLevel + 10 / 250) * (attackStat / defenseStat) * move.BasePower + 2) * modifier;
-			return damage;
-		}
 
 		//TODO: Method for calculating current accuracy of pokemon in a battle in case its accuracy has been affected by moves used against it. Called "Stat Modifiers" in http://bulbapedia.bulbagarden.net/wiki/Accuracy
-		public static bool CheckForMiss(float pokemonAccuracy, float pokemonEvasion, float moveAccuracy)
+		private static bool CheckIfHit(float pokemonAccuracy, float pokemonEvasion, float moveAccuracy)
 		{
 			float accuracyBase = moveAccuracy / 100;
 			float p = accuracyBase * (pokemonAccuracy / pokemonEvasion);
 			return p > 1;
+		}
+
+
+		//TODO: add corner cases for priority such as move with priority effects 
+		public static bool DoesPokemonAttackFirst(Pokemon pokemon1, Pokemon pokemon2) //evaluated per turn
+		{
+
+			int playerPokemonLevel = pokemon1.GetLevel();
+			int opponentPokemonLevel = pokemon2.GetLevel();
+			int playerSpeed = pokemon1.Speed.GetValue(playerPokemonLevel);
+			int opponentSpeed = pokemon2.Speed.GetValue(opponentPokemonLevel);
+			
+
+			if (playerSpeed == opponentSpeed)
+			{
+				int randomFirst = PokemanzUtil.GetRandomNumber(0, 2);
+				if (randomFirst == 1)
+				{
+					return true;
+				}
+			}
+			else if (playerSpeed > opponentSpeed)
+			{
+				return true;
+			}
+			return false;
 		}
 	}
 }

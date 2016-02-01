@@ -5,55 +5,119 @@ using System.Threading.Tasks;
 
 namespace Pokemanz.Core
 {
-    public class Battle
-    {
+	public class Battle
+	{
 
-		//TODO: add corner cases for priority such as move with priority effects 
-		public static Pokemon GetPokemonGoesFirst(Pokemon playerPokemon, Pokemon opponentPokemon, string playerAction) //evaluated per turn
+		private PlayerState player1State { get; set; }
+		private PlayerState player2State { get; set; }
+
+		public Battle(Player player1, Player player2)
 		{
-			int playerPokemonLevel = playerPokemon.GetLevel();
-			int opponentPokemonLevel = opponentPokemon.GetLevel();
-			int playerSpeed = playerPokemon.Speed.GetValue(playerPokemonLevel);
-			int opponentSpeed = opponentPokemon.Speed.GetValue(opponentPokemonLevel);
+			this.player1State = new PlayerState(player1);
+			this.player2State = new PlayerState(player2);
+		}
 
-			if (playerAction == "pokemon" || playerAction == "item")
-			{
-				return opponentPokemon;
-			}
 
-			if (playerAction == "run")
-			{
-				return playerPokemon;
-			}
+		public void PlayerSwitchPokemon(int pokemonSlot)
+		{
+			this.player1State.ActivePokemon = this.player1State.Player.playerPokemonList[pokemonSlot];
+			this.DoAIMove();
+		}
 
-			if (playerSpeed == opponentSpeed)
+		public void Fight(int moveSlot)
+		{
+			bool player1GoesFirst = BattleUtil.DoesPokemonAttackFirst(this.player1State.ActivePokemon, this.player2State.ActivePokemon);
+			if (player1GoesFirst)
 			{
-				int randomFirst = PokemanzUtil.GetRandomNumber(0, 2);
-				if (randomFirst == 1)
+				this.Attack(this.player1State.ActivePokemon, this.player2State.ActivePokemon, moveSlot);
+				bool isDead = this.isCurrentPokemonDead(this.player2State.ActivePokemon);
+				if (!isDead)
 				{
-					return playerPokemon;
+					this.DoAIMove();
 				}
 			}
-			else if (playerSpeed > opponentSpeed)
+			else
 			{
-				return playerPokemon;
+				this.DoAIMove();
+				bool isDead = this.isCurrentPokemonDead(this.player2State.ActivePokemon); //HELP: condense duplicates?
+				if (!isDead)
+				{
+					this.Attack(this.player1State.ActivePokemon, this.player2State.ActivePokemon, moveSlot);
+				}
 			}
-			return opponentPokemon;
 		}
 
-		public Pokemon PlayerSwitchPokemon(Pokemon chosenPokemon)
+		private void Attack(Pokemon attackingPokemon, Pokemon defendingPokemon, int moveSlot)
 		{
-			Pokemon playerPokemon = chosenPokemon;
-			return playerPokemon;
+			Move chosenMove = attackingPokemon.Moves[moveSlot];
+			int damage = BattleUtil.CalculatePokemonDamage(attackingPokemon, defendingPokemon, chosenMove);
+			defendingPokemon.hpModifier += damage;
 		}
 
-
-
-		/*public static bool PlayerOutofPokemon(Player player) //This would be executed every time a player's pokemon faints.
+		public void Run()
 		{
-			for (int i = 0; i < player.playerPokemonList.Length; i++) 
+			bool ifSuccess = BattleUtil.CheckIfEscapeSuccess(this.player1State.ActivePokemon, this.player2State.ActivePokemon);
+			if (ifSuccess)
 			{
-				if (player.playerPokemonList[i].hpModifier >= player.playerPokemonList[i].Hp) //HELP: trying to get hp
+				player1State.Condition = PlayerCondition.Escaped;
+			}
+			else
+			{
+				this.DoAIMove();
+			}
+		}
+
+		public bool isCurrentPokemonDead(Pokemon pokemon)
+		{
+			if (pokemon.hpModifier >= pokemon.Hp.GetValue(pokemon.GetLevel()))
+			{
+				return true;
+			}
+			return false;
+		}
+
+		private bool CheckBattleOverPlayer(PlayerState playerState)
+		{
+			//TODO check if active pokemon dead
+			bool outOfPokemon = PlayerOutofPokemon(playerState.Player);
+			if (outOfPokemon)
+			{
+				playerState.Condition = PlayerCondition.OutOfPokemon;
+			}
+			switch (playerState.Condition)
+			{
+				case PlayerCondition.Escaped:
+					return true;
+				case PlayerCondition.OutOfPokemon:
+					return true;
+				case PlayerCondition.Normal:
+					return false;
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
+		}
+
+		public bool CheckIfBattleOver()
+		{
+			bool player1Over = CheckBattleOverPlayer(player1State);
+			bool player2Over = CheckBattleOverPlayer(player2State);
+			if (player1Over || player2Over)
+			{
+				return true;
+			}
+			return false;
+		}
+
+		private void DoAIMove()
+		{
+			//TODO Get random move
+		}
+
+		public static bool PlayerOutofPokemon(Player player) //This would be executed every time a player's pokemon faints.
+		{
+			for (int i = 0; i < player.playerPokemonList.Length; i++)
+			{
+				if (player.playerPokemonList[i].hpModifier >= player.playerPokemonList[i].Hp.GetValue(player.playerPokemonList[i].GetLevel())) //HELP: trying to get hp
 				{
 					continue;
 				}
@@ -63,50 +127,34 @@ namespace Pokemanz.Core
 				}
 			}
 			return true;
-		}*/
+		}
 
-		static void Main(string[] args)
+
+		private class PlayerState
 		{
-			Player newPlayer = new Player();
-			Pokemon playerPokemon = newPlayer.playerPokemonList[0];
-
-			IPokemonRepository repository = PokemonExcelRepository.Create();
-			Pokemon opponentPokemon = repository.GetRandomPokemon();
-
-			//TODO: player chooses an action
-			string playerAction = Console.ReadLine();
-			switch (playerAction) //Decision details based on menu item selected
+			public Player Player { get; set; }
+			public Pokemon ActivePokemon { get; set; }
+			public PlayerCondition Condition { get; set; }
+			public PlayerState(Player player)
 			{
-				case "attack":
-					string playerPokemonMove = Console.ReadLine(); //HELP: turn into move
-					break;
-				case "pokemon":
-					string chosenPokemon = Console.ReadLine(); //HELP: turn into pokemon
-					break;
-				case "item":
-					string chosenItem = Console.ReadLine();
-					break;
-				default:
-					break;
-						}
-			
-			Pokemon pokemonGoesFirst = GetPokemonGoesFirst(playerPokemon, opponentPokemon, playerAction);
-
-			switch (playerAction)
-			{
-				case "run":
-					BattleUtil.CheckIfEscapeSuccess(playerPokemon, opponentPokemon);
-					break;
-				case "attack":
-					BattleUtil.PokemonAttacks(attackingPokemon, defendingPokemon, activeMove);
-					break;
-				case "pokemon":
-					PlayerSwitchPokemon(chosenPokemon);
-					break;
-				case "item":
-					//TODO: use item method
-					break;
+				this.Player = player;
+				this.ActivePokemon = player.playerPokemonList[0];
 			}
 		}
+
+	}
+	public enum PlayerCondition
+	{
+		Normal,
+		Escaped,
+		OutOfPokemon
+	}
+
+	public enum PlayerAction
+	{
+		Fight,
+		Pokemon,
+		Item,
+		Run
 	}
 }
