@@ -25,11 +25,27 @@ namespace Pokemanz.Core
 		public int BaseExpGiven { get; private set; }
 		public int BaseCatchRate { get; private set; }
 
-		public int MoveSlot1 { get; private set; }
-		public int MoveSlot2 { get; private set; }
-		public int MoveSlot3 { get; private set; }
-		public int MoveSlot4 { get; private set; }
+		//HELP
+		//Changed "private set" ? 
+		//do these belong on class Pokemon?
+		//How do you add initial values?
+		public int hpModifier { get; set; }
+		public int attackModifier { get; set; }
+		public int defenseModifier { get; set; }
+		public int spAttackModifier { get; set; }
+		public int spDefenseModifier { get; set; }
+		public int speedModifier { get; set; }
+		public int Accuracy { get; set; }
+		public int Evasion { get; set; }
+		public int statusCondition { get; set; }
 
+		public List<Move> Moves { get; private set; } = new List<Move>(new Move[4]);
+		
+		public void AssignMove(Move move, int slotNumber)
+		{
+			this.Moves[slotNumber - 1] = move;
+		}
+		
 		public bool AddExperience(int expEarned)
 		{
 			int levelBefore = GetLevel();
@@ -96,6 +112,8 @@ namespace Pokemanz.Core
 			return (int)newStat;
 		}
 
+
+		//todo connect with Pokemon class & dont pass in level 
 		public virtual int GetValue(int level)
 		{
 			int statValue = CalcStat(level);
@@ -155,23 +173,23 @@ namespace Pokemanz.Core
 
 	public enum PokemonType
 	{
-		Grass,
-		Water,
-		Fire,
-		Flying,
-		Electric,
-		Normal,
-		Poison,
-		Ground,
-		Rock,
-		Ghost,
-		Steel,
-		Dark,
-		Bug,
-		Ice,
-		Dragon,
-		Fighting,
-		Psychic
+		Normal = 0,
+		Fighting = 1,
+		Flying = 2,
+		Poison = 3,
+		Ground = 4,
+		Rock = 5,
+		Bug = 6,
+		Ghost = 7,
+		Steel = 8,
+		Fire = 9,
+		Water = 10,
+		Grass = 11,
+		Electric = 12,
+		Psychic = 13,
+		Ice = 14, 
+		Dragon = 15,
+		Dark = 16
 	}
 
 	public enum PokemonExpType
@@ -180,7 +198,7 @@ namespace Pokemanz.Core
 		MedFast
 	}
 
-	public class Moves
+	public class Move
 	{
 		public string Name { get; private set; }
 		public int Id { get; private set; }
@@ -190,10 +208,31 @@ namespace Pokemanz.Core
 		public int BasePower { get; private set; }
 		public int Accuracy { get; private set; }
 
+		//HELP
+		//Changed "private set" ? 
+		//do these belong on class Move?
+		//How do you add initial values?
+		public int ppModifier { get; set; }
+		public int basePowerModifier { get; set; }
+
+		//TODO
+		public static Move GetRandom()
+		{
+			return new Move
+			{
+				Accuracy = 1,
+				BasePower = 1,
+				Category = MoveCategory.Physical,
+				Name = "Name",
+				PP = 1,
+				Type = PokemonType.Fire
+			};
+		}
 	}
 
 	public enum MoveCategory
 	{
+		None, //HELP is this needed?
 		Physical,
 		Special,
 		Status
@@ -213,6 +252,8 @@ namespace Pokemanz.Core
 						return 1.5f;
 					case PokeballType.UltraBall:
 						return 2;
+					case PokeballType.MasterBall:
+						return 255;
 					default:
 						throw new ArgumentOutOfRangeException(nameof(this.Type));
 				}
@@ -225,8 +266,39 @@ namespace Pokemanz.Core
 	{
 		PokeBall,
 		GreatBall,
-		UltraBall
+		UltraBall,
+		MasterBall
 	}
 
-	//TODO: inherited enum class for types of Status conditions?
+	public class StatusConditions
+	{
+		public float StatusConditionModifier
+		{
+			get
+			{
+				switch (this.Type)
+				{
+					case StatusType.Paralyze:
+					case StatusType.Poison:
+					case StatusType.Burn:
+						return 5;
+					case StatusType.Sleep:
+					case StatusType.Freeze:
+						return 10;
+					default:
+						throw new ArgumentOutOfRangeException(nameof(this.Type));
+				}
+			}
+		}
+		public StatusType Type { get; set; }
+	}
+
+	public enum StatusType
+	{
+		Paralyze,
+		Sleep,
+		Burn,
+		Freeze,
+		Poison
+	}
 }

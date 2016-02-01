@@ -1,90 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace Pokemanz.Core
+namespace Pokemanz.Core.Utilities
 {
-	public static class PokemanzUtil
-	{
-		private static Random random { get; } = new Random();
-		//TODO: Pokemon stat calculator
-		//Stat Research is derived from: http://bulbapedia.bulbagarden.net/wiki/Statistic
-		
-
-		internal static bool IsOdd(int value)
-		{
-			return value % 2 == 1;
-		}
-
-		//SpriteSheet Front
-
-		public static int GetFrontSpriteRow(int id)
-		{
-			return id / 16;
-		}
-
-		public static int GetFrontSpriteCol(int id)
-		{
-			return id % 16;
-		}
-
-		internal static int GetRandomNumber(int minValue, int maxValue)
-		{
-			return PokemanzUtil.random.Next(minValue, maxValue);
-		}
-
-		public static int ExpGain(int baseExpGiven, bool isWild, int enemyLevel, int pokemonUsed)
-		{
-			/*int t = 1; //TODO: placeholder for pokemon is original owner vs received in a trade
-			int e = 1; //TODO: placeholder for LuckyEgg
-			int p = 1; //TODO: placeholder for O-power
-			int f = 1; //TODO: placeholder for affection hearts
-			int v = 1; //TODO placeholder for exp gain if pokemon is past level where it should have evolved but did not 
-			int expGain = (a * t * BaseExpGiven * e * enemyLevel * p * f * v) / (7 * s);*/
-
-			float trainerBonus = 1;
-
-			if (!isWild)
-			{
-				trainerBonus = 1.5f;
-			}
-
-			int expGain = (int)(trainerBonus * baseExpGiven * enemyLevel) / (7 * pokemonUsed);
-			return expGain;
-		}
-
-		//TODO: add rest of types
-		public static float DamageEffectiveness(PokemonType attackType, PokemonType defenseType)
-		{
-			
-			float[,] typeChart = new float[3, 3] {
-			{1, 1, 1,} ,   
-			{2, 1, 0.5f} ,   
-			{1, 2, 1} 
-			};
-
-			float attackModifier = typeChart[(int)attackType, (int)defenseType];
-
-			return attackModifier;
-		}
+    public static class CatchPokemonUtil
+    {
 
 		//Catchrate formula
 
-		public static int CatchRate(int hpMax, int hpCurrent, int ballCatchRateModifer, int statusConditionModifier)
+		public static int GetCatchRate(int hpMax, int hpCurrent, int ballCatchRateModifer, int statusConditionModifier)
 		{
 			int catchRate = Math.Max((3 * hpMax - 2 * hpCurrent) * ballCatchRateModifer / (3 * hpMax), 1) + statusConditionModifier;
-			return catchRate;
+			return Math.Min(catchRate, 255);
 		}
 
-		public static int ShakeProbability(int catchRate)
+		//TODO: ETHAN OPTIMIZE
+
+		public static int GetShakeProbability(int catchRate)
 		{
-		if (catchRate > 0 && catchRate < 1)
+			if (catchRate > 0 && catchRate < 1)
 			{
 				return 63;
 			}
-		else if (catchRate == 2)
+			else if (catchRate == 2)
 			{
 				return 75;
 			}
@@ -187,7 +127,7 @@ namespace Pokemanz.Core
 		{
 			for (int numberOfTries = 0; numberOfTries < 4; numberOfTries++)
 			{
-				int shakeCheck = GetRandomNumber(0, 255);
+				int shakeCheck = PokemanzUtil.GetRandomNumber(0, 255);
 
 				if (shakeProbability >= shakeCheck)
 				{
@@ -198,4 +138,3 @@ namespace Pokemanz.Core
 		}
 	}
 }
-
