@@ -72,7 +72,7 @@ namespace Pokemanz.ConsoleApp
 			Console.WriteLine("Pokemon Assigned: " + newPlayer.playerPokemonList[0].Name);
 			Console.WriteLine(" ");
 			IPokemonRepository repository = PokemonExcelRepository.Create();
-			Pokemon randomPokemon = repository.GetRandomPokemon();
+			Pokemon randomPokemon = repository.GetRandom();
 			Console.WriteLine("Random Pokemon: " + randomPokemon.Name);
 			Console.ReadLine();
 		}
@@ -80,12 +80,13 @@ namespace Pokemanz.ConsoleApp
 		public static void DoBattle()
 		{
 
-			IPokemonRepository repository = PokemonExcelRepository.Create();
-			Pokemon playerPokemon = repository.GetRandomPokemon();
-			Move move1 = Move.GetRandom();
+			IPokemonRepository pokemonRepository = PokemonExcelRepository.Create();
+			IMoveRepository moveRepository = MoveExcelRepository.Create();
+			Pokemon playerPokemon = pokemonRepository.GetRandom();
+			Move move1 = moveRepository.GetRandom();
 			playerPokemon.AssignMove(move1, 1);
-			Pokemon wildPokemon = repository.GetRandomPokemon();
-			Move move2 = Move.GetRandom();
+			Pokemon wildPokemon = pokemonRepository.GetRandom();
+			Move move2 = moveRepository.GetRandom();
 			wildPokemon.AssignMove(move2, 1);
 
 			Player player = new Player();

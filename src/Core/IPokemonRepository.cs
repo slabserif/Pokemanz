@@ -11,7 +11,7 @@ namespace Pokemanz.Core
 
 		Pokemon GetPokemonById(int id);
 
-		Pokemon GetRandomPokemon();
+		Pokemon GetRandom();
 
 		List<Pokemon> GetAllPokemon();
 
