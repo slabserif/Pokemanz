@@ -111,6 +111,12 @@ namespace Pokemanz.ConsoleApp
 					case PlayerAction.Fight:
 						string playerPokemonMove = Console.ReadLine();
 						int moveSlot = int.Parse(playerPokemonMove);
+						bool DoesMoveHavePp = BattleUtil.CheckIfMoveHasPp(playerPokemon, moveSlot);
+						if (!DoesMoveHavePp)
+						{
+							Console.WriteLine("No more PP");
+							continue; //Not a continue? 
+						}
 						battle.Fight(moveSlot);
 						break;
 					case PlayerAction.Pokemon:

@@ -50,7 +50,8 @@ namespace Pokemanz.Core
 		{
 			Move chosenMove = attackingPokemon.Moves[moveSlot];
 			int damage = BattleUtil.CalculatePokemonDamage(attackingPokemon, defendingPokemon, chosenMove);
-			defendingPokemon.hpModifier += damage;
+			attackingPokemon.Moves[moveSlot].PpModifier++;
+			defendingPokemon.HpModifier += damage;
 		}
 
 		public void Run()
@@ -68,7 +69,7 @@ namespace Pokemanz.Core
 
 		public bool isCurrentPokemonDead(Pokemon pokemon)
 		{
-			if (pokemon.hpModifier >= pokemon.Hp.GetValue(pokemon.GetLevel()))
+			if (pokemon.HpModifier >= pokemon.Hp.GetValue(pokemon.GetLevel()))
 			{
 				return true;
 			}
@@ -115,7 +116,7 @@ namespace Pokemanz.Core
 		{
 			for (int i = 0; i < player.playerPokemonList.Length; i++)
 			{
-				if (player.playerPokemonList[i].hpModifier >= player.playerPokemonList[i].Hp.GetValue(player.playerPokemonList[i].GetLevel())) //HELP: trying to get hp
+				if (player.playerPokemonList[i].HpModifier >= player.playerPokemonList[i].Hp.GetValue(player.playerPokemonList[i].GetLevel())) //HELP: trying to get hp
 				{
 					continue;
 				}

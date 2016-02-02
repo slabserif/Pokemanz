@@ -19,8 +19,7 @@ namespace Pokemanz.Core
 
 		public static int CalculatePokemonDamage(Pokemon attackingPokemon, Pokemon defendingPokemon, Move activeMove) //TODO: change Move activeMove to attackingPokemon.activeMove. Does activeMove need to be a Pokemon property?
 		{
-			float moveAccuracy = 1.0f; //TODO: Dummy data. Remove once excel implemented
-			bool hitSuccess = CheckIfHit(attackingPokemon.Accuracy, attackingPokemon.Evasion, moveAccuracy); //Move excel repository needed
+			bool hitSuccess = CheckIfHit(attackingPokemon, activeMove); 
 
 			if (hitSuccess)
 			{
@@ -164,7 +163,6 @@ namespace Pokemanz.Core
 			return damageRandomizationModifier;
 		}
 
-		//TODO: Get move type?
 		private static float SameTypeAttackBonus(Pokemon pokemon, Move move)
 		{
 			if (pokemon.Type1 == move.Type)
@@ -190,18 +188,16 @@ namespace Pokemanz.Core
 		}
 
 
-
-		//TODO: Method for calculating current accuracy of pokemon in a battle in case its accuracy has been affected by moves used against it. Called "Stat Modifiers" in http://bulbapedia.bulbagarden.net/wiki/Accuracy
-		private static bool CheckIfHit(float pokemonAccuracy, float pokemonEvasion, float moveAccuracy)
+		private static bool CheckIfHit(Pokemon pokemon, Move move)
 		{
-			float accuracyBase = moveAccuracy / 100;
-			float p = accuracyBase * (pokemonAccuracy / pokemonEvasion);
+			float accuracyBase = move.Accuracy / 100;
+			float p = accuracyBase * (pokemon.Accuracy / pokemon.Evasion);
 			return p > 1;
 		}
 
 
 		//TODO: add corner cases for priority such as move with priority effects 
-		public static bool DoesPokemonAttackFirst(Pokemon pokemon1, Pokemon pokemon2) //evaluated per turn
+		public static bool DoesPokemonAttackFirst(Pokemon pokemon1, Pokemon pokemon2) 
 		{
 
 			int playerPokemonLevel = pokemon1.GetLevel();
@@ -223,6 +219,15 @@ namespace Pokemanz.Core
 				return true;
 			}
 			return false;
+		}
+
+		public static bool CheckIfMoveHasPp(Pokemon pokemon, int moveSlot) 
+		{
+			if (pokemon.Moves[moveSlot].PpModifier == pokemon.Moves[moveSlot].PP)
+			{
+				return false;
+			}
+			return true;
 		}
 	}
 }
