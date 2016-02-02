@@ -17,19 +17,19 @@ namespace Pokemanz.Core
 			}
 		}*/
 
-		public static int CalculatePokemonDamage(Pokemon attackingPokemon, Pokemon defendingPokemon, Move activeMove) //TODO: change Move activeMove to attackingPokemon.activeMove. Does activeMove need to be a Pokemon property?
-		{
-			bool hitSuccess = CheckIfHit(attackingPokemon, activeMove); 
+		public static int CalculatePokemonDamage(Pokemon attackingPokemon, Pokemon defendingPokemon, int moveSlot) 
+	{
+			bool hitSuccess = CheckIfHit(attackingPokemon, moveSlot); 
 
 			if (hitSuccess)
 			{
-				float sameTypeAttackBonus = SameTypeAttackBonus(attackingPokemon, activeMove);
+				float sameTypeAttackBonus = SameTypeAttackBonus(attackingPokemon, moveSlot);
 				int damageRandomizationModifier = GetDamageRandomizationModifier();
 				float attackTypeModifier = DamageEffectiveness(attackingPokemon.Type1, defendingPokemon.Type1);
 				int critical = CriticalHit();
 				int modifier = GetDamageModifier(damageRandomizationModifier, attackTypeModifier, (int)sameTypeAttackBonus, critical); //TODO: sameTypeAttackBonus should be a float
 
-				int damage = CalculateDamage(attackingPokemon, defendingPokemon, activeMove, modifier);
+				int damage = CalculateDamage(attackingPokemon, defendingPokemon, moveSlot, modifier);
 				return damage;
 			}
 			return 0;
@@ -42,14 +42,14 @@ namespace Pokemanz.Core
 			int modifier = sameTypeAttackBonus * (int)attackTypeModifier * critical * damageRandomizationModifier;
 			return modifier;
 		}
-		private static int CalculateDamage(Pokemon attackingPokemon, Pokemon defendingPokemon, Move move, int modifier)
+		private static int CalculateDamage(Pokemon attackingPokemon, Pokemon defendingPokemon, int moveSlot, int modifier)
 		{
 			int attackingPokemonLevel = attackingPokemon.GetLevel();
 			int defendingPokemonLevel = defendingPokemon.GetLevel();
 			int attackStat;
 			int defenseStat;
 
-			if (move.Category == MoveCategory.Special)
+			if (attackingPokemon.Moves[moveSlot].Category == MoveCategory.Special)
 			{
 				attackStat = attackingPokemon.SpAttack.GetValue(attackingPokemonLevel);
 				defenseStat = defendingPokemon.SpDefense.GetValue(defendingPokemonLevel);
@@ -60,7 +60,7 @@ namespace Pokemanz.Core
 				defenseStat = defendingPokemon.Defense.GetValue(defendingPokemonLevel);
 			}
 
-			int damage = ((2 * attackingPokemonLevel + 10 / 250) * (attackStat / defenseStat) * move.BasePower + 2) * modifier;
+			int damage = ((2 * attackingPokemonLevel + 10 / 250) * (attackStat / defenseStat) * attackingPokemon.Moves[moveSlot].BasePower + 2) * modifier;
 			return damage;
 		}
 
@@ -114,14 +114,16 @@ namespace Pokemanz.Core
 		}
 
 		//TODO: Write method of halving attack of burned pokemon 
-		public static int PoisonOrBurnDamage(int hpMax)
+		public static int PoisonOrBurnDamage(Pokemon pokemon)
 		{
+			int hpMax = HealthStat.Parse(pokemon.Hp); //HELP parse HealthStat into an int
 			int damage = hpMax * (1 / 8);
 			return damage;
 		}
 
-		public static int BadlyPoisonedDamage(int hpMax, int turnNum)
+		public static int BadlyPoisonedDamage(Pokemon pokemon, int turnNum)
 		{
+			int hpMax = HealthStat.Parse(pokemon.Hp); //HELP parse HealthStat into an int
 			int damage = (int)(hpMax * (turnNum / 16.0));
 			return damage;
 		}
@@ -163,9 +165,9 @@ namespace Pokemanz.Core
 			return damageRandomizationModifier;
 		}
 
-		private static float SameTypeAttackBonus(Pokemon pokemon, Move move)
+		private static float SameTypeAttackBonus(Pokemon pokemon, int moveSlot)
 		{
-			if (pokemon.Type1 == move.Type)
+			if (pokemon.Type1 == pokemon.Moves[moveSlot].Type)
 			{
 				return 1.5f;
 			}
@@ -188,9 +190,9 @@ namespace Pokemanz.Core
 		}
 
 
-		private static bool CheckIfHit(Pokemon pokemon, Move move)
+		private static bool CheckIfHit(Pokemon pokemon, int moveSlot)
 		{
-			float accuracyBase = move.Accuracy / 100;
+			float accuracyBase = pokemon.Moves[moveSlot].Accuracy / 100;
 			float p = accuracyBase * (pokemon.Accuracy / pokemon.Evasion);
 			return p > 1;
 		}
