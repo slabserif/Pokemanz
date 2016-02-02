@@ -49,21 +49,35 @@ namespace Pokemanz.Core
 		private void Attack(Pokemon attackingPokemon, Pokemon defendingPokemon, int moveSlot)
 		{
 			Move chosenMove = attackingPokemon.Moves[moveSlot];
-			int damage = BattleUtil.CalculatePokemonDamage(attackingPokemon, defendingPokemon, chosenMove);
+			int damage = BattleUtil.CalculatePokemonDamage(attackingPokemon, defendingPokemon, moveSlot);
 			attackingPokemon.Moves[moveSlot].PpModifier++;
 			defendingPokemon.HpModifier += damage;
 		}
 
 		public void Run()
 		{
-			bool ifSuccess = BattleUtil.CheckIfEscapeSuccess(this.player1State.ActivePokemon, this.player2State.ActivePokemon);
+			int escapeCounter = this.player1State.EscapeAttemptCounter;
+			bool ifSuccess = BattleUtil.CheckIfEscapeSuccess(this.player1State.ActivePokemon, this.player2State.ActivePokemon, escapeCounter);
 			if (ifSuccess)
 			{
 				player1State.Condition = PlayerCondition.Escaped;
 			}
 			else
 			{
+				this.player1State.EscapeAttemptCounter++;
 				this.DoAIMove();
+			}
+		}
+
+		// HELP: Get player1's most recent Action?????????
+		// A var in the CheckIfEscapeSuccess Method is an int of how many escape attempts have been made in a row
+		// This method is trying to check to see if the player previously tried to Run, but this turn did Fight,Item,or Pokemon.
+		// If the player did another action besides run, their EscapeAttemptsCounter value needs to be reset to 1.
+		private void ResetEscapeCounter(PlayerState playerState)
+		{
+			if (this.player1State.Action != PlayerAction.Run)
+			{
+				this.player1State.EscapeAttemptCounter = 1;
 			}
 		}
 
@@ -78,6 +92,7 @@ namespace Pokemanz.Core
 
 		private bool CheckBattleOverPlayer(PlayerState playerState)
 		{
+				ResetEscapeCounter(playerState); //HELP: is this a good spot for this? 
 				bool outOfPokemon = PlayerOutofPokemon(playerState.Player);
 				if (outOfPokemon)
 				{
@@ -133,11 +148,14 @@ namespace Pokemanz.Core
 		{
 			public Player Player { get; set; }
 			public Pokemon ActivePokemon { get; set; }
+			public int EscapeAttemptCounter { get; set; }
 			public PlayerCondition Condition { get; set; }
+			public PlayerAction Action { get; set; }
 			public PlayerState(Player player)
 			{
 				this.Player = player;
 				this.ActivePokemon = player.playerPokemonList[0];
+				this.EscapeAttemptCounter = 1;
 			}
 		}
 

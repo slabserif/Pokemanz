@@ -64,19 +64,17 @@ namespace Pokemanz.Core
 			return damage;
 		}
 
-		//TODO: Think this is trying to do too much
-		public static bool CheckIfEscapeSuccess(Pokemon playerPokemon, Pokemon opponentPokemon)
+		public static bool CheckIfEscapeSuccess(Pokemon playerPokemon, Pokemon opponentPokemon, int escapeCounter)
 		{
 			int playerSpeed = playerPokemon.Speed.GetValue(playerPokemon.GetLevel());
 			int opponentSpeed = playerPokemon.Speed.GetValue(playerPokemon.GetLevel());
-			int timesAttempted = 1;
-			opponentSpeed /= 4; //TODO: what is 'mod 256'?
+			opponentSpeed = (opponentSpeed/4) % 256; 
 			if (opponentSpeed == 0)
 			{
 				return true;
 			}
 
-			int checkEscape = ((playerSpeed * 32) / opponentSpeed) + (30 * timesAttempted);
+			int checkEscape = ((playerSpeed * 32) / opponentSpeed) + (30 * escapeCounter);
 			if (checkEscape > 255)
 			{
 				return true;
@@ -89,8 +87,6 @@ namespace Pokemanz.Core
 			}
 			else
 			{
-				timesAttempted++; //TODO: is this actually going to increment?
-								  //TODO: players turn is over?
 				return false;
 			}
 		}
@@ -113,17 +109,26 @@ namespace Pokemanz.Core
 			return sleepNumTurns;
 		}
 
+		public static bool CheckIfAwake(int sleepNumTurns, int turnsSinceSleep)
+		{
+			if (sleepNumTurns >= turnsSinceSleep)
+			{
+				return true;
+			}
+			return false;
+		}
+
 		//TODO: Write method of halving attack of burned pokemon 
 		public static int PoisonOrBurnDamage(Pokemon pokemon)
 		{
-			int hpMax = HealthStat.Parse(pokemon.Hp); //HELP parse HealthStat into an int
+			int hpMax = pokemon.Hp.GetValue(pokemon.GetLevel());
 			int damage = hpMax * (1 / 8);
 			return damage;
 		}
 
 		public static int BadlyPoisonedDamage(Pokemon pokemon, int turnNum)
 		{
-			int hpMax = HealthStat.Parse(pokemon.Hp); //HELP parse HealthStat into an int
+			int hpMax = pokemon.Hp.GetValue(pokemon.GetLevel());
 			int damage = (int)(hpMax * (turnNum / 16.0));
 			return damage;
 		}
