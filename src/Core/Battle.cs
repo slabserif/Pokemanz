@@ -122,6 +122,13 @@ namespace Pokemanz.Core
 			return false;
 		}
 
+		//HELP
+		public void RewardExperience(Pokemon activePokemon, Pokemon faintedPokemon)
+		{
+			int expGain = PokemanzUtil.ExpGain(Pokemon faintedPokemon, bool isWild, int pokemonUsed);
+			Pokemon.AddExperience(expGain);
+		}
+
 		private void DoAIMove()
 		{
 			//TODO Get random move
