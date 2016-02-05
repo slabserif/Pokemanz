@@ -140,11 +140,16 @@ namespace Pokemanz.ConsoleApp
 					break;
 				}
 				bool isPlayerPokemonDead = battle.isCurrentPokemonDead(playerPokemon);
+				bool isEnemyPokemonDead = battle.isCurrentPokemonDead(wildPokemon);
 				if (isPlayerPokemonDead)
 				{
 					string chosenPokemon = Console.ReadLine();
 					int chosenSlot = int.Parse(chosenPokemon);
 					battle.PlayerSwitchPokemon(chosenSlot);
+				}
+				if (isEnemyPokemonDead)
+				{
+					battle.PlayerSwitchPokemon(theWild);
 				}
 			}
 		}

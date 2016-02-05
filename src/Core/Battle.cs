@@ -23,6 +23,12 @@ namespace Pokemanz.Core
 			this.DoAIMove();
 		}
 
+		public void EnemySwitchPokemon(Player enemyPlayer)
+		{
+			int nextPokemon = enemyPlayer.playerPokemonList[player2State.ActivePokemon + 1];//HELP: get partyslot # of active pokemon
+			this.player2State.ActivePokemon = this.player2State.Player.playerPokemonList[nextPokemon];
+		}
+
 		public void Fight(int moveSlot)
 		{
 			bool player1GoesFirst = BattleUtil.DoesPokemonAttackFirst(this.player1State.ActivePokemon, this.player2State.ActivePokemon);
@@ -138,7 +144,7 @@ namespace Pokemanz.Core
 		{
 			for (int i = 0; i < player.playerPokemonList.Length; i++)
 			{
-				if (player.playerPokemonList[i].HpModifier >= player.playerPokemonList[i].Hp.GetValue(player.playerPokemonList[i].GetLevel())) //HELP: trying to get hp
+				if (player.playerPokemonList[i].HpModifier >= player.playerPokemonList[i].Hp.GetValue(player.playerPokemonList[i].GetLevel())) 
 				{
 					continue;
 				}

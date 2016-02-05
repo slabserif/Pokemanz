@@ -37,7 +37,7 @@ namespace Pokemanz.Core
 		public int SpeedModifier { get; set; }
 		public int Accuracy { get; set; }
 		public int Evasion { get; set; }
-		public int StatusCondition { get; set; }
+		public StatusType StatusCondition { get; set; }
 
 		public List<Move> Moves { get; private set; } = new List<Move>(new Move[4]);
 		
@@ -295,6 +295,7 @@ namespace Pokemanz.Core
 
 	public enum StatusType
 	{
+		None,
 		Paralyze,
 		Sleep,
 		Burn,
