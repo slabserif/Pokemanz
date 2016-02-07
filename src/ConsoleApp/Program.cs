@@ -147,10 +147,10 @@ namespace Pokemanz.ConsoleApp
 					int chosenSlot = int.Parse(chosenPokemon);
 					battle.PlayerSwitchPokemon(chosenSlot);
 				}
-				if (isEnemyPokemonDead)
-				{
-					battle.PlayerSwitchPokemon(theWild);
-				}
+				//if (isEnemyPokemonDead)
+				//{
+				//	battle.PlayerSwitchPokemon(theWild);
+				//}
 			}
 		}
 

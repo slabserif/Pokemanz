@@ -23,11 +23,11 @@ namespace Pokemanz.Core
 			this.DoAIMove();
 		}
 
-		public void EnemySwitchPokemon(Player enemyPlayer)
-		{
-			int nextPokemon = enemyPlayer.playerPokemonList[player2State.ActivePokemon + 1];//HELP: get partyslot # of active pokemon
-			this.player2State.ActivePokemon = this.player2State.Player.playerPokemonList[nextPokemon];
-		}
+		//public void EnemySwitchPokemon(Player enemyPlayer)
+		//{
+		//	int nextPokemon = enemyPlayer.playerPokemonList[player2State.ActivePokemon + 1];//HELP: get partyslot # of active pokemon
+		//	this.player2State.ActivePokemon = this.player2State.Player.playerPokemonList[nextPokemon];
+		//}
 
 		public void Fight(int moveSlot)
 		{
@@ -129,11 +129,11 @@ namespace Pokemanz.Core
 		}
 
 		//HELP
-		public void RewardExperience(Pokemon activePokemon, Pokemon faintedPokemon)
-		{
-			int expGain = PokemanzUtil.ExpGain(Pokemon faintedPokemon, bool isWild, int pokemonUsed);
-			Pokemon.AddExperience(expGain);
-		}
+		//public void RewardExperience(Pokemon activePokemon, Pokemon faintedPokemon)
+		//{
+		//	int expGain = PokemanzUtil.ExpGain(faintedPokemon, faintedPokemon.isWild, pokemonUsed);
+		//	Pokemon.AddExperience(expGain);
+		//}
 
 		private void DoAIMove()
 		{
