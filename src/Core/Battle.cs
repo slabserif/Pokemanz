@@ -98,7 +98,7 @@ namespace Pokemanz.Core
 
 		private bool CheckBattleOverPlayer(PlayerState playerState)
 		{
-				ResetEscapeCounter(playerState); //HELP: is this a good spot for this? 
+				ResetEscapeCounter(playerState); 
 				bool outOfPokemon = PlayerOutofPokemon(playerState.Player);
 				if (outOfPokemon)
 				{

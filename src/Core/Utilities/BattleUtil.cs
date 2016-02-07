@@ -113,7 +113,7 @@ namespace Pokemanz.Core
 		{
 			if (sleepNumTurns >= turnsSinceSleep)
 			{
-				return true;
+				return sleepNumTurns >= turnsSinceSleep;
 			}
 			return false;
 		}
@@ -230,7 +230,8 @@ namespace Pokemanz.Core
 
 		public static bool CheckIfMoveHasPp(Pokemon pokemon, int moveSlot) 
 		{
-			if (pokemon.Moves[moveSlot].PpModifier == pokemon.Moves[moveSlot].PP)
+			bool outOfPP = pokemon.Moves[moveSlot].PpModifier == pokemon.Moves[moveSlot].PP;
+			if (outOfPP)
 			{
 				return false;
 			}
