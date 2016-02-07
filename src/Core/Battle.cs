@@ -23,6 +23,12 @@ namespace Pokemanz.Core
 			this.DoAIMove();
 		}
 
+		//public void EnemySwitchPokemon(Player enemyPlayer)
+		//{
+		//	int nextPokemon = enemyPlayer.playerPokemonList[player2State.ActivePokemon + 1];//HELP: get partyslot # of active pokemon
+		//	this.player2State.ActivePokemon = this.player2State.Player.playerPokemonList[nextPokemon];
+		//}
+
 		public void Fight(int moveSlot)
 		{
 			bool player1GoesFirst = BattleUtil.DoesPokemonAttackFirst(this.player1State.ActivePokemon, this.player2State.ActivePokemon);
@@ -49,26 +55,41 @@ namespace Pokemanz.Core
 		private void Attack(Pokemon attackingPokemon, Pokemon defendingPokemon, int moveSlot)
 		{
 			Move chosenMove = attackingPokemon.Moves[moveSlot];
-			int damage = BattleUtil.CalculatePokemonDamage(attackingPokemon, defendingPokemon, chosenMove);
-			defendingPokemon.hpModifier += damage;
+			int damage = BattleUtil.CalculatePokemonDamage(attackingPokemon, defendingPokemon, moveSlot);
+			attackingPokemon.Moves[moveSlot].PpModifier++;
+			defendingPokemon.HpModifier += damage;
 		}
 
 		public void Run()
 		{
-			bool ifSuccess = BattleUtil.CheckIfEscapeSuccess(this.player1State.ActivePokemon, this.player2State.ActivePokemon);
+			int escapeCounter = this.player1State.EscapeAttemptCounter;
+			bool ifSuccess = BattleUtil.CheckIfEscapeSuccess(this.player1State.ActivePokemon, this.player2State.ActivePokemon, escapeCounter);
 			if (ifSuccess)
 			{
 				player1State.Condition = PlayerCondition.Escaped;
 			}
 			else
 			{
+				this.player1State.EscapeAttemptCounter++;
 				this.DoAIMove();
+			}
+		}
+
+		// HELP: Get player1's most recent Action?????????
+		// A var in the CheckIfEscapeSuccess Method is an int of how many escape attempts have been made in a row
+		// This method is trying to check to see if the player previously tried to Run, but this turn did Fight,Item,or Pokemon.
+		// If the player did another action besides run, their EscapeAttemptsCounter value needs to be reset to 1.
+		private void ResetEscapeCounter(PlayerState playerState)
+		{
+			if (this.player1State.Action != PlayerAction.Run)
+			{
+				this.player1State.EscapeAttemptCounter = 1;
 			}
 		}
 
 		public bool isCurrentPokemonDead(Pokemon pokemon)
 		{
-			if (pokemon.hpModifier >= pokemon.Hp.GetValue(pokemon.GetLevel()))
+			if (pokemon.HpModifier >= pokemon.Hp.GetValue(pokemon.GetLevel()))
 			{
 				return true;
 			}
@@ -77,6 +98,7 @@ namespace Pokemanz.Core
 
 		private bool CheckBattleOverPlayer(PlayerState playerState)
 		{
+				ResetEscapeCounter(playerState); 
 				bool outOfPokemon = PlayerOutofPokemon(playerState.Player);
 				if (outOfPokemon)
 				{
@@ -106,6 +128,13 @@ namespace Pokemanz.Core
 			return false;
 		}
 
+		//HELP
+		//public void RewardExperience(Pokemon activePokemon, Pokemon faintedPokemon)
+		//{
+		//	int expGain = PokemanzUtil.ExpGain(faintedPokemon, faintedPokemon.isWild, pokemonUsed);
+		//	Pokemon.AddExperience(expGain);
+		//}
+
 		private void DoAIMove()
 		{
 			//TODO Get random move
@@ -115,7 +144,7 @@ namespace Pokemanz.Core
 		{
 			for (int i = 0; i < player.playerPokemonList.Length; i++)
 			{
-				if (player.playerPokemonList[i].hpModifier >= player.playerPokemonList[i].Hp.GetValue(player.playerPokemonList[i].GetLevel())) //HELP: trying to get hp
+				if (player.playerPokemonList[i].HpModifier >= player.playerPokemonList[i].Hp.GetValue(player.playerPokemonList[i].GetLevel())) 
 				{
 					continue;
 				}
@@ -132,11 +161,14 @@ namespace Pokemanz.Core
 		{
 			public Player Player { get; set; }
 			public Pokemon ActivePokemon { get; set; }
+			public int EscapeAttemptCounter { get; set; }
 			public PlayerCondition Condition { get; set; }
+			public PlayerAction Action { get; set; }
 			public PlayerState(Player player)
 			{
 				this.Player = player;
 				this.ActivePokemon = player.playerPokemonList[0];
+				this.EscapeAttemptCounter = 1;
 			}
 		}
 

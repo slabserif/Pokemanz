@@ -111,6 +111,12 @@ namespace Pokemanz.ConsoleApp
 					case PlayerAction.Fight:
 						string playerPokemonMove = Console.ReadLine();
 						int moveSlot = int.Parse(playerPokemonMove);
+						bool doesMoveHavePp = BattleUtil.CheckIfMoveHasPp(playerPokemon, moveSlot);
+						if (!doesMoveHavePp)
+						{
+							Console.WriteLine("No more PP");
+							continue; 
+						}
 						battle.Fight(moveSlot);
 						break;
 					case PlayerAction.Pokemon:
@@ -134,12 +140,17 @@ namespace Pokemanz.ConsoleApp
 					break;
 				}
 				bool isPlayerPokemonDead = battle.isCurrentPokemonDead(playerPokemon);
+				bool isEnemyPokemonDead = battle.isCurrentPokemonDead(wildPokemon);
 				if (isPlayerPokemonDead)
 				{
 					string chosenPokemon = Console.ReadLine();
 					int chosenSlot = int.Parse(chosenPokemon);
 					battle.PlayerSwitchPokemon(chosenSlot);
 				}
+				//if (isEnemyPokemonDead)
+				//{
+				//	battle.PlayerSwitchPokemon(theWild);
+				//}
 			}
 		}
 

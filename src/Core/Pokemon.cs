@@ -29,15 +29,15 @@ namespace Pokemanz.Core
 		//Changed "private set" ? 
 		//do these belong on class Pokemon?
 		//How do you add initial values?
-		public int hpModifier { get; set; }
-		public int attackModifier { get; set; }
-		public int defenseModifier { get; set; }
+		public int HpModifier { get; set; }
+		public int AttackModifier { get; set; }
+		public int DefenseModifier { get; set; }
 		public int spAttackModifier { get; set; }
-		public int spDefenseModifier { get; set; }
-		public int speedModifier { get; set; }
+		public int SpDefenseModifier { get; set; }
+		public int SpeedModifier { get; set; }
 		public int Accuracy { get; set; }
 		public int Evasion { get; set; }
-		public int statusCondition { get; set; }
+		public StatusType StatusCondition { get; set; }
 
 		public List<Move> Moves { get; private set; } = new List<Move>(new Move[4]);
 		
@@ -212,8 +212,8 @@ namespace Pokemanz.Core
 		//Changed "private set" ? 
 		//do these belong on class Move?
 		//How do you add initial values?
-		public int ppModifier { get; set; }
-		public int basePowerModifier { get; set; }
+		public int PpModifier { get; set; }
+		public int BasePowerModifier { get; set; }
 
 		//TODO
 		public static Move GetRandom()
@@ -295,6 +295,7 @@ namespace Pokemanz.Core
 
 	public enum StatusType
 	{
+		None,
 		Paralyze,
 		Sleep,
 		Burn,

@@ -32,7 +32,9 @@ namespace Pokemanz.Core
 			return PokemanzUtil.random.Next(minValue, maxValue);
 		}
 
-		public static int ExpGain(int baseExpGiven, bool isWild, int enemyLevel, int pokemonUsed)
+		//TODO: mark battle as Wild vs Trainer
+		//TODO: new method: pokemonUsed set to false, change to true if used, change back to false if fainted
+		public static int ExpGain(Pokemon faintedPokemon, bool isWild, int pokemonUsed)
 		{
 			/*int t = 1; //TODO: placeholder for pokemon is original owner vs received in a trade
 			int e = 1; //TODO: placeholder for LuckyEgg
@@ -48,7 +50,7 @@ namespace Pokemanz.Core
 				trainerBonus = 1.5f;
 			}
 
-			int expGain = (int)(trainerBonus * baseExpGiven * enemyLevel) / (7 * pokemonUsed);
+			int expGain = (int)(trainerBonus * faintedPokemon.BaseExpGiven * faintedPokemon.GetLevel()) / (7 * pokemonUsed);
 			return expGain;
 		}	
 	}
