@@ -10,6 +10,7 @@ namespace Pokemanz.Core
 
 		private PlayerState player1State { get; set; }
 		private PlayerState player2State { get; set; }
+		private List<BattleTurn> Turns { get; } = new List<BattleTurn>();
 
 		public Battle(Player player1, Player player2)
 		{
@@ -20,6 +21,7 @@ namespace Pokemanz.Core
 		public void PlayerSwitchPokemon(int pokemonSlot)
 		{
 			this.player1State.ActivePokemon = this.player1State.Player.playerPokemonList[pokemonSlot];
+			this.Turns.Add(new PokemonSwitchTurn(pokemonSlot));
 			this.DoAIMove();
 		}
 
@@ -32,13 +34,18 @@ namespace Pokemanz.Core
 		public void Fight(int moveSlot)
 		{
 			bool player1GoesFirst = BattleUtil.DoesPokemonAttackFirst(this.player1State.ActivePokemon, this.player2State.ActivePokemon);
+
+			int player1PartySlot = this.player1State.Player.playerPokemonList.IndexOf(this.player1State.ActivePokemon); //HELP Why is Index of not working?
+			int player2PartySlot = this.player2State.Player.playerPokemonList.IndexOf(this.player2State.ActivePokemon); //HELP Why is Index of not working?
+
 			if (player1GoesFirst)
 			{
 				this.Attack(this.player1State.ActivePokemon, this.player2State.ActivePokemon, moveSlot);
 				bool isDead = this.isCurrentPokemonDead(this.player2State.ActivePokemon);
+				this.Turns.Add(new FightTurn(player1PartySlot, moveSlot, isDead));
 				if (!isDead)
 				{
-					this.DoAIMove();
+					this.DoAIMove();//TODO: make enemy pokemon actually attack
 				}
 			}
 			else
@@ -48,6 +55,7 @@ namespace Pokemanz.Core
 				if (!isDead)
 				{
 					this.Attack(this.player1State.ActivePokemon, this.player2State.ActivePokemon, moveSlot);
+					this.Turns.Add(new FightTurn(player1PartySlot, moveSlot, isDead));
 				}
 			}
 		}
@@ -66,11 +74,13 @@ namespace Pokemanz.Core
 			bool ifSuccess = BattleUtil.CheckIfEscapeSuccess(this.player1State.ActivePokemon, this.player2State.ActivePokemon, escapeCounter);
 			if (ifSuccess)
 			{
+				this.Turns.Add(new RunTurn(true));
 				player1State.Condition = PlayerCondition.Escaped;
 			}
 			else
 			{
-				this.player1State.EscapeAttemptCounter++;
+				this.Turns.Add(new RunTurn(false));
+				this.player1State.EscapeAttemptCounter++; //TODO: Remove this method of counting escapes since we could do it with the BattleTurn
 				this.DoAIMove();
 			}
 		}
@@ -85,6 +95,23 @@ namespace Pokemanz.Core
 			{
 				this.player1State.EscapeAttemptCounter = 1;
 			}
+		}
+
+		public int CalcEscapeAttempts() //Replacement for current escapseCounter method
+		{
+			int escapeCounter = 0; //Should always return at least 1 when counting current Run action
+			foreach (BattleTurn index in this.Turns.Reverse<index >()) //Run through list from most recent to oldest
+			{
+				if (this.Turns[index] == this.Turns.OfType<RunTurn>)
+				{
+					escapeCounter++;
+				}
+				else
+				{
+					return escapeCounter; //Should always return at least 1 when counting current Run action
+				}
+			}
+
 		}
 
 		public bool isCurrentPokemonDead(Pokemon pokemon)
@@ -129,11 +156,11 @@ namespace Pokemanz.Core
 		}
 
 		//HELP
-		//public void RewardExperience(Pokemon activePokemon, Pokemon faintedPokemon)
-		//{
-		//	int expGain = PokemanzUtil.ExpGain(faintedPokemon, faintedPokemon.isWild, pokemonUsed);
-		//	Pokemon.AddExperience(expGain);
-		//}
+		/*public void RewardExperience(PlayerState notFainted, PlayerState fainted)
+		{
+			int expGain = PokemanzUtil.ExpGain(fainted.ActivePokemon, fainted.Player.PType, pokemonUsed);
+			Pokemon.AddExperience(expGain);
+		}*/
 
 		private void DoAIMove()
 		{
@@ -186,5 +213,55 @@ namespace Pokemanz.Core
 		Pokemon,
 		Item,
 		Run
+	}
+
+	public abstract class BattleTurn
+	{
+		public bool IsFirstPlayer { get; } 
+
+	}
+
+	public class FightTurn : BattleTurn
+	{
+		public int PartySlot { get; }
+		public int MoveID { get; } //Needed? If a move was not used, how do we not have this store anything?
+		public bool Fainted { get; } //Needed? Other methods alreayd handle this
+		public FightTurn(int attackingPartySlot, int moveID, bool defendingFainted)
+		{
+			this.PartySlot = attackingPartySlot;
+			this.MoveID = MoveID;
+			this.Fainted = defendingFainted;
+				
+		}
+	}
+
+	public class PokemonSwitchTurn : BattleTurn
+	{
+		//public int OldPartySlot { get; }
+		public int NewPartySlot { get; }
+		public PokemonSwitchTurn(int newPartySlot)
+		{
+			this.NewPartySlot = newPartySlot;
+		}
+	}
+
+	public class ItemUseTurn : BattleTurn //TODO: place an "Add class object" into the battle itself when an item is used
+	{
+		public int ItemId { get; }
+		public ItemUseTurn(int itemId)
+		{
+			this.ItemId = itemId;
+		}
+	}
+
+	public class RunTurn : BattleTurn
+	{
+		public bool Successful { get; }
+
+		public RunTurn(bool successful)
+		{
+
+			this.Successful = successful;
+		}
 	}
 }

@@ -23,26 +23,24 @@ namespace Pokemanz.Core
 
 			if (hitSuccess)
 			{
-				float sameTypeAttackBonus = SameTypeAttackBonus(attackingPokemon, moveSlot);
+				bool sameTypeAttackBonus = SameTypeAttackBonus(attackingPokemon, moveSlot);
 				int damageRandomizationModifier = GetDamageRandomizationModifier();
 				float attackTypeModifier = DamageEffectiveness(attackingPokemon.Type1, defendingPokemon.Type1);
 				int critical = CriticalHit();
-				int modifier = GetDamageModifier(damageRandomizationModifier, attackTypeModifier, (int)sameTypeAttackBonus, critical); //TODO: sameTypeAttackBonus should be a float
-
+				float modifier = GetDamageModifier(damageRandomizationModifier, attackTypeModifier, sameTypeAttackBonus, critical);
 				int damage = CalculateDamage(attackingPokemon, defendingPokemon, moveSlot, modifier);
 				return damage;
 			}
 			return 0;
 		}
 
-		//TODO: connect SameTypeAttackBonus() to int sameAttackTypeBonus
-		private static int GetDamageModifier(int damageRandomizationModifier, float attackTypeModifier, int sameTypeAttackBonus, int critical)
+		private static float GetDamageModifier(int damageRandomizationModifier, float attackTypeModifier, bool sameTypeAttackBonus, int critical)
 		{
 			//TODO: add "other" variable to equation to account for held items
-			int modifier = sameTypeAttackBonus * (int)attackTypeModifier * critical * damageRandomizationModifier;
+			float modifier = (sameTypeAttackBonus ? 1.5f : 1f) * attackTypeModifier * critical * damageRandomizationModifier;
 			return modifier;
 		}
-		private static int CalculateDamage(Pokemon attackingPokemon, Pokemon defendingPokemon, int moveSlot, int modifier)
+		private static int CalculateDamage(Pokemon attackingPokemon, Pokemon defendingPokemon, int moveSlot, float modifier)
 		{
 			int attackingPokemonLevel = attackingPokemon.GetLevel();
 			int defendingPokemonLevel = defendingPokemon.GetLevel();
@@ -60,7 +58,7 @@ namespace Pokemanz.Core
 				defenseStat = defendingPokemon.Defense.GetValue(defendingPokemonLevel);
 			}
 
-			int damage = ((2 * attackingPokemonLevel + 10 / 250) * (attackStat / defenseStat) * attackingPokemon.Moves[moveSlot].BasePower + 2) * modifier;
+			int damage = (int)(((2 * attackingPokemonLevel + 10 / 250) * (attackStat / defenseStat) * attackingPokemon.Moves[moveSlot].BasePower + 2) * modifier);
 			return damage;
 		}
 
@@ -170,16 +168,9 @@ namespace Pokemanz.Core
 			return damageRandomizationModifier;
 		}
 
-		private static float SameTypeAttackBonus(Pokemon pokemon, int moveSlot)
+		private static bool SameTypeAttackBonus(Pokemon pokemon, int moveSlot)
 		{
-			if (pokemon.Type1 == pokemon.Moves[moveSlot].Type)
-			{
-				return 1.5f;
-			}
-			else
-			{
-				return 1;
-			}
+			return pokemon.Type1 == pokemon.Moves[moveSlot].Type;
 		}
 
 		private static int CriticalHit()

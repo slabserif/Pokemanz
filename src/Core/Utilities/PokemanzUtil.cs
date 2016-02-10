@@ -34,7 +34,7 @@ namespace Pokemanz.Core
 
 		//TODO: mark battle as Wild vs Trainer
 		//TODO: new method: pokemonUsed set to false, change to true if used, change back to false if fainted
-		public static int ExpGain(Pokemon faintedPokemon, bool isWild, int pokemonUsed)
+		public static int ExpGain(Pokemon faintedPokemon, PlayerType playerType, int pokemonUsed)
 		{
 			/*int t = 1; //TODO: placeholder for pokemon is original owner vs received in a trade
 			int e = 1; //TODO: placeholder for LuckyEgg
@@ -45,7 +45,7 @@ namespace Pokemanz.Core
 
 			float trainerBonus = 1;
 
-			if (!isWild)
+			if (playerType == PlayerType.Trainer)
 			{
 				trainerBonus = 1.5f;
 			}

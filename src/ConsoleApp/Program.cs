@@ -67,7 +67,7 @@ namespace Pokemanz.ConsoleApp
 		{
 			Pokemon starter = ChoosePokemon();
 			Console.WriteLine("Starter Pokemon: " + starter.Name);
-			Player newPlayer = new Player();
+			Player newPlayer = new Player("Trainer Joey", PlayerType.You, GenderType.Male );
 			newPlayer.AssignPokemon(starter, 1);
 			Console.WriteLine("Pokemon Assigned: " + newPlayer.playerPokemonList[0].Name);
 			Console.WriteLine(" ");
@@ -89,9 +89,9 @@ namespace Pokemanz.ConsoleApp
 			Move move2 = moveRepository.GetRandom();
 			wildPokemon.AssignMove(move2, 1);
 
-			Player player = new Player();
+			Player player = new Player("Ethan", PlayerType.You, GenderType.Male);
 			player.playerPokemonList[0] = playerPokemon;
-			Player theWild = new Player();
+			Player theWild = new Player("Tracy", PlayerType.Trainer, GenderType.Female);
 			theWild.playerPokemonList[0] = wildPokemon;
 			Battle battle = new Battle(player, theWild);
 
